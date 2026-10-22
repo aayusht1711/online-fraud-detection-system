@@ -1,0 +1,11 @@
+sample_id,input_char,dwell_time_ms,flight_time_ms,path_distance_px,is_bot
+SMP_BOT_001,a,1.2,0.0,0.0,1
+SMP_BOT_002,d,1.5,0.0,0.0,1
+SMP_BOT_003,m,0.8,0.0,0.0,1
+SMP_BOT_004,i,1.1,0.0,0.0,1
+SMP_BOT_005,n,0.9,0.0,0.0,1
+SMP_HUM_001,a,88.4,142.1,18.4,0
+SMP_HUM_002,d,92.1,118.6,12.2,0
+SMP_HUM_003,m,104.3,165.8,24.1,0
+SMP_HUM_004,i,78.9,98.2,9.5,0
+SMP_HUM_005,n,95.6,134.0,15.8,0

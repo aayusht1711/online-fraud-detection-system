@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Banking Dashboard - Secure Session</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #3b82f6 !important;
+        }
+        .card-ghost {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+        }
+        .balance-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            border: 1px solid #2563eb;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .telemetry-log {
+            background-color: #020617;
+            color: #22c55e;
+            font-family: monospace;
+            font-size: 0.8rem;
+            padding: 12px;
+            border-radius: 8px;
+            height: 180px;
+            overflow-y: auto;
+            border: 1px solid #1e293b;
+        }
+    </style>
+</head>
+<body class="py-4">
+
+<div class="container">
+    <!-- Decoy Header -->
+    <header class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary">
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-bank fs-2 text-primary"></i>
+            <div>
+                <h4 class="mb-0 navbar-brand">Apex Commercial Bank</h4>
+                <small class="text-secondary">Logged in as: <strong>user_session_sandbox_992</strong></small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-success px-3 py-2"><i class="bi bi-shield-check me-1"></i> Session Encrypted</span>
+            <a href="/" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left me-1"></i> Back to Main Engine</a>
+        </div>
+    </header>
+
+    <!-- Synthetic Balance Box -->
+    <div class="balance-box mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <small class="text-uppercase text-light opacity-75 fw-bold">Available Checking Balance</small>
+                <h1 class="display-4 fw-bold text-white my-1">$14.20</h1>
+                <small class="text-info"><i class="bi bi-clock-history me-1"></i> Last updated: Just now</small>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <button class="btn btn-primary px-4 py-2 fw-bold me-2"><i class="bi bi-arrow-up-right me-1"></i> Transfer Funds</button>
+                <button class="btn btn-outline-light px-4 py-2"><i class="bi bi-receipt me-1"></i> View Statements</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Decoy Transfer Form -->
+        <div class="col-lg-7">
+            <div class="card card-ghost p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-send me-2 text-primary"></i> Instant Wire Transfer</h5>
+                <form id="wireTransferForm">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Recipient IBAN / Account Number</label>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="GB89370400440532013000" value="US99882211004433" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Transfer Amount ($)</label>
+                        <input type="number" step="0.01" class="form-control bg-dark text-light border-secondary" value="14.20" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Reference Note</label>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" value="Emergency payout">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2"><i class="bi bi-check2-circle me-1"></i> Authorize Transfer</button>
+                </form>
+
+                <div id="transferAlert" class="alert alert-success mt-3 d-none">
+                    <i class="bi bi-check-circle-fill me-2"></i> <strong>Transfer Success!</strong> Transaction reference #GHOST_TX_9921 processed. (Decoy response - 0 real funds moved).
+                </div>
+            </div>
+        </div>
+
+        <!-- Silent Telemetry Monitor (Under-the-hood Threat Intelligence Dump) -->
+        <div class="col-lg-5">
+            <div class="card card-ghost p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-bold text-danger mb-0"><i class="bi bi-eye-fill me-2"></i> Honeypot Silent Telemetry Feed</h6>
+                    <span class="badge bg-danger">TRAPPED ACTOR</span>
+                </div>
+                <p class="small text-muted mb-2">
+                    Attacker is inside isolated <code>/sandbox/session</code> route. Real-time background probes are running:
+                </p>
+                <div class="telemetry-log" id="telemetryLog">
+                    [00:00.01] Ghost Session Initialized.<br>
+                    [00:00.03] Synthetic balance $14.20 rendered.<br>
+                    [00:00.05] WebRTC STUN IP Discovery launched...<br>
+                    [00:00.12] Canvas/WebGL hardware profiling captured.<br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const logElem = document.getElementById('telemetryLog');
+
+    function appendLog(msg) {
+        const time = new Date().toISOString().substring(11, 19);
+        logElem.innerHTML += `[${time}] ${msg}<br>`;
+        logElem.scrollTop = logElem.scrollHeight;
+    }
+
+    // Silent WebRTC STUN IP Probe Simulation
+    async function collectWebRTCProbes() {
+        appendLog("Executing WebRTC ICE Candidate query...");
+        try {
+            const pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+            pc.createDataChannel("");
+            pc.createOffer().then(offer => pc.setLocalDescription(offer));
+            pc.onicecandidate = (ice) => {
+                if (ice && ice.candidate && ice.candidate.candidate) {
+                    appendLog("Captured STUN Candidate: " + ice.candidate.candidate.substring(0, 45) + "...");
+                }
+            };
+        } catch(e) {
+            appendLog("WebRTC probe complete.");
+        }
+    }
+
+    // Canvas Fingerprinting Probe Simulation
+    function collectCanvasFingerprint() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = "top";
+        ctx.font = "14px 'Arial'";
+        ctx.fillText("SafeSight_Honeypot_Probe_#8912", 2, 2);
+        const dataUrl = canvas.toDataURL();
+        appendLog("Canvas Hardware Hash: " + dataUrl.substring(30, 60) + "...");
+    }
+
+    // Handle Decoy Wire Transfer Submit
+    document.getElementById('wireTransferForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        appendLog("Attacker initiated transfer action.");
+        
+        const res = await fetch('/api/sandbox/transfer', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ amount: 14.20, recipient: "US99882211004433" })
+        });
+        const data = await res.json();
+        
+        document.getElementById('transferAlert').classList.remove('d-none');
+        appendLog(`Returned fake success response to attacker. Ref: ${data.transaction_id}`);
+    });
+
+    // Run background probes on load
+    setTimeout(collectWebRTCProbes, 500);
+    setTimeout(collectCanvasFingerprint, 1200);
+</script>
+
+</body>
+</html>

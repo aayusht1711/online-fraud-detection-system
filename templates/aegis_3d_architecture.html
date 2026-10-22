@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Aegis - Master Unified 3D Architecture (Whole Platform Flow)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #080c14;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #f1f5f9;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-panel {
+      background: rgba(10, 16, 28, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .cyber-grid-overlay {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(8, 12, 20, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.4);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.8);
+    }
+    .node-nav-badge {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .node-nav-badge:hover {
+      transform: translateY(-2px);
+    }
+    .node-nav-badge.active {
+      box-shadow: 0 0 16px var(--badge-glow);
+      border-color: var(--badge-color);
+      background: rgba(255, 255, 255, 0.14);
+    }
+  </style>
+</head>
+<body class="w-full h-full relative overflow-hidden bg-[#080c14]">
+
+  <!-- 3D WebGL Canvas Container -->
+  <div id="canvas-container" class="absolute inset-0 z-0"></div>
+  
+  <!-- Subtle Background Cyber Grid Overlay -->
+  <div class="absolute inset-0 cyber-grid-overlay z-0 pointer-events-none"></div>
+
+  <!-- ================= TOP HUD NAVIGATION BAR ================= -->
+  <header class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-2.5 pointer-events-none border-b border-slate-800/50 bg-gradient-to-b from-[#080c14]/95 via-[#080c14]/80 to-transparent">
+    <!-- Brand / Title -->
+    <div class="flex items-center space-x-3.5 pointer-events-auto">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 flex items-center justify-center p-[1px] shadow-lg shadow-cyan-500/20">
+        <div class="w-full h-full bg-[#080c14] rounded-[11px] flex items-center justify-center">
+          <i class="fa-solid fa-shield-halved text-cyan-400 text-base"></i>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-sm font-extrabold tracking-tight text-white flex items-center">
+            PROJECT AEGIS
+            <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 mono">UNIFIED PLATFORM (ALL 3 VECTORS)</span>
+          </h1>
+        </div>
+        <p class="text-[11px] text-slate-300 font-medium flex items-center space-x-1.5">
+          <span class="text-cyan-400">1. All Inbound Entry</span>
+          <span class="text-slate-600">→</span>
+          <span class="text-blue-400">2. Optical & Lexical</span>
+          <span class="text-slate-600">→</span>
+          <span class="text-teal-400">3. Device & Biometrics</span>
+          <span class="text-slate-600">→</span>
+          <span class="text-indigo-400">4. Edge Gateway</span>
+          <span class="text-slate-600">→</span>
+          <span class="text-purple-400">5. AI Risk Core</span>
+          <span class="text-slate-600">→</span>
+          <span class="text-emerald-400">10. Decision Switch</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Center Live System Status -->
+    <div class="hidden xl:flex items-center space-x-4 glass-panel px-4 py-1.5 rounded-2xl pointer-events-auto border-slate-700/60">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 absolute"></span>
+        <span class="text-[11px] font-bold text-slate-200 mono">ALL 10 NODES LEVEL & ACTIVE</span>
+      </div>
+      <div class="h-3 w-[1px] bg-slate-700"></div>
+      <div class="flex items-center space-x-1 text-xs text-slate-300 mono">
+        <span class="text-slate-500">COVERAGE:</span>
+        <span class="text-cyan-400 font-bold">UPI 2.0 + PASSIVE AUTH</span>
+      </div>
+      <div class="h-3 w-[1px] bg-slate-700"></div>
+      <div class="flex items-center space-x-1 text-xs text-slate-300 mono">
+        <span class="text-slate-500">FPS:</span>
+        <span class="text-emerald-400 font-bold" id="hud-fps">60</span>
+      </div>
+    </div>
+
+    <!-- Right Navigation Links -->
+    <div class="flex items-center space-x-2 pointer-events-auto">
+      <a href="/" class="glass-panel hover:bg-slate-800/80 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-house text-slate-400 text-xs"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="/upi" class="glass-panel hover:bg-slate-800/80 px-3 py-1.5 rounded-xl text-xs font-semibold text-cyan-400 hover:text-cyan-300 border-cyan-500/20 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-mobile-screen-button text-cyan-400 text-xs"></i>
+        <span>UPI 2.0</span>
+      </a>
+      <a href="/demo" class="glass-panel hover:bg-slate-800/80 px-3 py-1.5 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 border-amber-500/20 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-clone text-amber-400 text-xs"></i>
+        <span>Dual Demo</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ================= TOP PIPELINE NAVIGATION PILLS ================= -->
+  <div class="absolute top-14 left-6 right-6 z-20 pointer-events-none flex justify-center">
+    <div class="glass-panel px-3 py-1 rounded-2xl pointer-events-auto flex items-center space-x-1 border-slate-700/60 overflow-x-auto max-w-full shadow-2xl">
+      <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mono px-2 border-r border-slate-700">All 10 Nodes:</span>
+      
+      <button onclick="focusNodeById('node1')" id="nav-badge-node1" style="--badge-color: #00e5ff; --badge-glow: rgba(0,229,255,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-cyan-400 bg-cyan-950/40 border border-cyan-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]"></span>
+        <span>1. User Input</span>
+      </button>
+      <span class="text-slate-600 text-xs font-bold">→</span>
+
+      <button onclick="focusNodeById('node2')" id="nav-badge-node2" style="--badge-color: #2563eb; --badge-glow: rgba(37,99,235,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-blue-400 bg-blue-950/40 border border-blue-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#2563eb]"></span>
+        <span>2. QR Scan</span>
+      </button>
+      <span class="text-slate-600 text-xs font-bold">→</span>
+
+      <button onclick="focusNodeById('node3')" id="nav-badge-node3" style="--badge-color: #14b8a6; --badge-glow: rgba(20,184,166,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-teal-400 bg-teal-950/40 border border-teal-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#14b8a6]"></span>
+        <span>3. Phone Check</span>
+      </button>
+      <span class="text-slate-600 text-xs font-bold">→</span>
+
+      <button onclick="focusNodeById('node4')" id="nav-badge-node4" style="--badge-color: #6366f1; --badge-glow: rgba(99,102,241,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-indigo-400 bg-indigo-950/40 border border-indigo-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#6366f1]"></span>
+        <span>4. Gateway</span>
+      </button>
+      <span class="text-slate-600 text-xs font-bold">→</span>
+
+      <button onclick="focusNodeById('node5')" id="nav-badge-node5" style="--badge-color: #a855f7; --badge-glow: rgba(168,85,247,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-purple-400 bg-purple-950/40 border border-purple-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#a855f7]"></span>
+        <span>5. AI Brain</span>
+      </button>
+
+      <div class="h-3 w-[1px] bg-slate-700 mx-1"></div>
+
+      <button onclick="focusNodeById('node6')" id="nav-badge-node6" style="--badge-color: #d946ef; --badge-glow: rgba(217,70,239,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-fuchsia-400 bg-fuchsia-950/40 border border-fuchsia-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#d946ef]"></span>
+        <span>6. Speed</span>
+      </button>
+
+      <button onclick="focusNodeById('node7')" id="nav-badge-node7" style="--badge-color: #f97316; --badge-glow: rgba(249,115,22,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-orange-400 bg-orange-950/40 border border-orange-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#f97316]"></span>
+        <span>7. Mule Map</span>
+      </button>
+
+      <button onclick="focusNodeById('node8')" id="nav-badge-node8" style="--badge-color: #f43f5e; --badge-glow: rgba(244,63,94,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-rose-400 bg-rose-950/40 border border-rose-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#f43f5e]"></span>
+        <span>8. Trap</span>
+      </button>
+
+      <button onclick="focusNodeById('node9')" id="nav-badge-node9" style="--badge-color: #e11d48; --badge-glow: rgba(225,29,72,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-red-400 bg-red-950/40 border border-red-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#e11d48]"></span>
+        <span>9. SOC Alert</span>
+      </button>
+
+      <span class="text-slate-600 text-xs font-bold">→</span>
+      <button onclick="focusNodeById('node10')" id="nav-badge-node10" style="--badge-color: #10b981; --badge-glow: rgba(16,185,129,0.4)" class="node-nav-badge px-2 py-0.5 rounded-lg text-xs font-semibold text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 flex items-center space-x-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>
+        <span>10. Decision</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= LEFT FLOATING TOOLBAR ================= -->
+  <div class="absolute left-6 top-24 bottom-12 z-20 flex flex-col justify-between pointer-events-none w-72">
+    <!-- Camera Presets -->
+    <div class="glass-panel p-3.5 rounded-2xl pointer-events-auto space-y-2.5">
+      <div class="flex items-center justify-between pb-1.5 border-b border-slate-700/50">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-video text-cyan-400 text-xs"></i>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Camera Framing</span>
+        </div>
+        <span class="text-[10px] text-slate-400 mono">LEVEL GRID</span>
+      </div>
+      <div class="grid grid-cols-2 gap-1.5">
+        <button onclick="setCameraPreset('isometric')" class="cam-btn active px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 transition text-left flex items-center justify-between">
+          <span>Overview (All 10)</span>
+          <span class="text-[9px] opacity-60">FULL</span>
+        </button>
+        <button onclick="setCameraPreset('tier1')" class="cam-btn px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <span>1-3. All Inbound</span>
+          <span class="text-[9px] opacity-60">INPUT</span>
+        </button>
+        <button onclick="setCameraPreset('tier2')" class="cam-btn px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <span>4. Edge Gateway</span>
+          <span class="text-[9px] opacity-60">GATE</span>
+        </button>
+        <button onclick="setCameraPreset('tier3')" class="cam-btn px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <span>5-8. AI & Engines</span>
+          <span class="text-[9px] opacity-60">BRAIN</span>
+        </button>
+        <button onclick="setCameraPreset('tier4')" class="cam-btn px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <span>9-10. Outcomes</span>
+          <span class="text-[9px] opacity-60">RAILS</span>
+        </button>
+        <button onclick="setCameraPreset('top')" class="cam-btn px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <span>Top Blueprint</span>
+          <span class="text-[9px] opacity-60">MAP</span>
+        </button>
+      </div>
+
+      <div class="pt-1.5 text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-700/50">
+        <span>🖱️ Drag: Orbit</span>
+        <span>🖱️ Right: Pan</span>
+        <span>🔍 Scroll: Zoom</span>
+      </div>
+    </div>
+
+    <!-- Live Multi-Vector Threat Scenarios -->
+    <div class="glass-panel p-3.5 rounded-2xl pointer-events-auto space-y-2.5">
+      <div class="flex items-center justify-between pb-1.5 border-b border-slate-700/50">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-bolt text-indigo-400 text-xs"></i>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Simulate Whole Platform</span>
+        </div>
+        <span class="text-[10px] text-emerald-400 mono animate-pulse">LIVE</span>
+      </div>
+
+      <div class="space-y-1.5">
+        <button onclick="setTrafficMode('balanced')" id="mode-balanced" class="mode-btn w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-500/30 transition text-left flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span>1. Normal Multi-Vector Flow</span>
+          </div>
+          <span class="text-[9px] mono text-slate-400">Mixed</span>
+        </button>
+
+        <button onclick="setTrafficMode('legitimate')" id="mode-legitimate" class="mode-btn w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>2. Clean Retail (Path A Safe)</span>
+          </div>
+          <span class="text-[9px] mono text-emerald-400 font-bold">100% Pass</span>
+        </button>
+
+        <button onclick="setTrafficMode('friction')" id="mode-friction" class="mode-btn w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span>3. UPI Call / Photo Scam (Path B)</span>
+          </div>
+          <span class="text-[9px] mono text-amber-400 font-bold">5s Friction</span>
+        </button>
+
+        <button onclick="setTrafficMode('attack')" id="mode-attack" class="mode-btn w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <span>4. AnyDesk Spyware Coercion</span>
+          </div>
+          <span class="text-[9px] mono text-rose-400 font-bold">Block Z9</span>
+        </button>
+
+        <button onclick="setTrafficMode('speed_attack')" id="mode-speed_attack" class="mode-btn w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-fuchsia-400"></span>
+            <span>5. UPI Impersonation & Typo-Squatting</span>
+          </div>
+          <span class="text-[9px] mono text-fuchsia-400 font-bold">&gt;900km/h</span>
+        </button>
+
+        <button onclick="setTrafficMode('bot_attack')" id="mode-bot_attack" class="mode-btn w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700 hover:bg-slate-700 transition text-left flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            <span>6. Botnet Credential Attack</span>
+          </div>
+          <span class="text-[9px] mono text-red-400 font-bold">Honeypot</span>
+        </button>
+      </div>
+
+      <!-- Pulse Speed & Animation Control -->
+      <div class="pt-2 border-t border-slate-700/50 space-y-1.5">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Flow Particle Speed</span>
+          <span id="speed-label" class="mono text-cyan-400 font-bold">1.0x</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="setSpeed(0.5)" class="speed-btn px-2 py-1 rounded-lg text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700">0.5x</button>
+          <button onclick="setSpeed(1.0)" class="speed-btn active px-2 py-1 rounded-lg text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">1.0x</button>
+          <button onclick="setSpeed(2.0)" class="speed-btn px-2 py-1 rounded-lg text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700">2.0x</button>
+          <button onclick="togglePause()" id="pause-btn" class="flex-1 px-2 py-1 rounded-lg text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700">PAUSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= RIGHT SLIDING ARCHITECTURAL INSPECTOR PANEL ================= -->
+  <div id="inspector-panel" class="absolute right-6 top-24 bottom-12 z-20 w-[430px] glass-panel rounded-2xl p-5 pointer-events-auto flex flex-col justify-between overflow-y-auto transition-all duration-300 border-slate-700/60 shadow-2xl">
+    <div class="space-y-3.5">
+      <!-- Node Header -->
+      <div>
+        <div class="flex items-center justify-between">
+          <span id="node-tag-pill" class="text-[10px] font-extrabold tracking-widest uppercase px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 mono">
+            STEP 1 OF 10: INBOUND
+          </span>
+          <span id="node-domain" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mono">
+            UPI + PASSIVE AUTH
+          </span>
+        </div>
+        
+        <h2 id="node-title" class="text-xl font-black text-white tracking-tight mt-1.5 flex items-center justify-between">
+          <span>1. USER / PAYMENT INPUT</span>
+        </h2>
+        
+        <p id="node-subtitle" class="text-xs text-cyan-300 font-semibold mt-0.5">
+          Where the transaction starts
+        </p>
+      </div>
+
+      <!-- Conversational Summary Card -->
+      <div class="bg-cyan-950/40 border border-cyan-500/30 rounded-xl p-3 space-y-1">
+        <div class="text-[10px] uppercase font-bold text-cyan-400 mono flex items-center space-x-1.5">
+          <i class="fa-solid fa-circle-info text-xs"></i>
+          <span>Plain English Summary</span>
+        </div>
+        <p id="node-summary" class="text-xs text-slate-200 leading-relaxed font-medium">
+          User logs in, enters a UPI ID, or scans a QR code.
+        </p>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 gap-2">
+        <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-800">
+          <div class="text-[9px] text-slate-500 uppercase tracking-wider mono">EXECUTION SLA</div>
+          <div id="node-stat-1" class="text-xs font-bold text-white mono mt-0.5">&lt; 0.5 ms</div>
+        </div>
+        <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-800">
+          <div class="text-[9px] text-slate-500 uppercase tracking-wider mono">SAMPLING RATE</div>
+          <div id="node-stat-2" class="text-xs font-bold text-cyan-400 mono mt-0.5">1,000 Hz Buffer</div>
+        </div>
+        <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-800">
+          <div class="text-[9px] text-slate-500 uppercase tracking-wider mono">SECURITY LAYER</div>
+          <div id="node-stat-3" class="text-xs font-bold text-indigo-300 mono mt-0.5">TLS 1.3 / mTLS</div>
+        </div>
+        <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-800">
+          <div class="text-[9px] text-slate-500 uppercase tracking-wider mono">ENGINE HEALTH</div>
+          <div id="node-stat-4" class="text-xs font-bold text-emerald-400 mono mt-0.5">Zero-Drop Queue</div>
+        </div>
+      </div>
+
+      <!-- Click-to-Open Deep Technical Specifications Drawer -->
+      <div class="space-y-1.5">
+        <button onclick="toggleTechDrawer()" class="w-full text-left py-2 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-xs font-bold text-slate-300 flex items-center justify-between border border-slate-700 transition">
+          <span class="flex items-center space-x-2">
+            <i class="fa-solid fa-code text-indigo-400 text-xs"></i>
+            <span>Deep Engineering Specifications</span>
+          </span>
+          <i id="drawer-arrow" class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform"></i>
+        </button>
+
+        <div id="tech-drawer" class="space-y-2 pt-1">
+          <!-- Deep Details Text -->
+          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 space-y-1">
+            <div class="text-[10px] text-slate-400 uppercase font-bold mono">Architecture Implementation:</div>
+            <p id="node-deep-details" class="text-xs text-slate-300 leading-relaxed">
+              Web/Android/iOS entry channels, raw transaction parameters.
+            </p>
+          </div>
+
+          <!-- Mathematical / Algorithm Formula Box -->
+          <div class="bg-black/50 rounded-xl p-3 border border-slate-800 space-y-1">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 mono">
+              <span>MATHEMATICAL ENGINE</span>
+              <span id="node-math-title" class="text-cyan-400 font-bold">VECTOR INGESTION</span>
+            </div>
+            <div id="node-math-formula" class="text-xs text-amber-300 font-mono py-0.5">
+              V_in = [ V_login, V_upi, V_context ]
+            </div>
+            <div id="node-math-desc" class="text-[10px] text-slate-400 leading-relaxed">
+              Multiplexes high-concurrency interaction channels into a unified pre-PIN threat telemetry pipeline.
+            </div>
+          </div>
+
+          <!-- Monitored Subsystems & APIs -->
+          <div class="space-y-1">
+            <div class="text-[10px] text-slate-400 uppercase font-bold mono">Monitored APIs & Protocols:</div>
+            <div id="node-tags" class="flex flex-wrap gap-1.5">
+              <span class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 mono">Web Login</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Action Button -->
+    <div class="pt-2.5 border-t border-slate-800">
+      <button id="node-focus-btn" onclick="focusCurrentNode()" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-lg shadow-cyan-500/20 transition flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-crosshairs text-xs"></i>
+        <span>Focus Camera to Pedestal</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= BOTTOM TELEMETRY TICKER ================= -->
+  <footer class="absolute bottom-0 left-0 right-0 z-20 h-9 glass-panel border-t border-slate-800/80 flex items-center px-6 pointer-events-auto overflow-hidden">
+    <div class="flex items-center space-x-3 text-xs mono shrink-0 pr-4 border-r border-slate-700">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+      <span class="text-slate-400 font-bold">UNIFIED TELEMETRY:</span>
+    </div>
+    <div class="overflow-hidden relative w-full h-full flex items-center">
+      <div id="telemetry-ticker" class="whitespace-nowrap flex space-x-8 text-xs mono text-slate-400">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= INTERACTIVE 3D HOVER TOOLTIP ================= -->
+  <div id="hover-tooltip" class="absolute z-30 pointer-events-none transform -translate-x-1/2 -translate-y-full opacity-0 transition-opacity duration-150">
+    <div class="glass-panel px-3 py-1.5 rounded-xl border shadow-xl flex items-center space-x-2" style="border-color: rgba(6, 182, 212, 0.4)">
+      <span id="tooltip-dot" class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+      <span id="tooltip-text" class="text-xs font-bold text-white mono">1. USER INPUT</span>
+    </div>
+  </div>
+
+  <!-- ================= THREE.JS 3D SCENE SCRIPT ================= -->
+  <script>
+    /* -------------------------------------------------------------
+       1. SCENE, CAMERA & RENDERER SETUP (ALL AT Y = 0 LEVEL GROUND)
+       ------------------------------------------------------------- */
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x080c14);
+    scene.fog = new THREE.FogExp2(0x080c14, 0.005);
+
+    // Camera: Crisp isometric perspective framing ALL 10 NODES comfortably
+    const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.5, 1000);
+    const defaultCamPos = new THREE.Vector3(25, 52, 64);
+    const defaultCamTarget = new THREE.Vector3(2, 0, 0);
+    camera.position.copy(defaultCamPos);
+    camera.lookAt(defaultCamTarget);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.copy(defaultCamTarget);
+    controls.minDistance = 15;
+    controls.maxDistance = 220;
+    controls.maxPolarAngle = Math.PI / 2 - 0.05;
+
+    /* -------------------------------------------------------------
+       2. LIGHTING & ENVIRONMENT
+       ------------------------------------------------------------- */
+    const ambientLight = new THREE.AmbientLight(0x131d33, 2.0);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xe0f2fe, 1.8);
+    dirLight.position.set(40, 70, 50);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    scene.add(dirLight);
+
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.7);
+    fillLight.position.set(-45, 25, -35);
+    scene.add(fillLight);
+
+    // Uniform Ground Grid at Y = 0 (ALL PEDESTALS REST RIGHT ON THIS PLANE)
+    const gridHelper = new THREE.GridHelper(160, 80, 0x06b6d4, 0x1e293b);
+    gridHelper.position.y = 0.0;
+    gridHelper.material.opacity = 0.35;
+    gridHelper.material.transparent = true;
+    scene.add(gridHelper);
+
+    const floorGeo = new THREE.PlaneGeometry(180, 180);
+    const floorMat = new THREE.MeshBasicMaterial({ color: 0x05080f, transparent: true, opacity: 0.85 });
+    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.y = -0.05;
+    scene.add(floorMesh);
+
+    /* -------------------------------------------------------------
+       3. 10 NODES LEVEL PLANAR COORDINATES (NO SUNKEN NODES)
+          All nodes rest on Y = 0 ground plane!
+       ------------------------------------------------------------- */
+    const NODES = {
+      // Tier 1: Ingress & Sensors (Left: X = -32)
+      node1: {
+        id: 'node1',
+        stepPill: 'STEP 1 OF 10: USER INGRESS',
+        name: '1. USER / PAYMENT INPUT',
+        shortName: '1. USER INPUT',
+        domain: 'UPI + PASSIVE AUTH',
+        subtitle: 'Where the transaction starts',
+        summary: 'User logs in, enters a UPI ID, or scans a QR code across Web, Mobile, or POS.',
+        deepDetails: 'Web/Android/iOS entry channels, raw transaction parameters, and client interaction stream.',
+        color: 0x00e5ff,
+        hexColor: '#00e5ff',
+        pos: new THREE.Vector3(-32, 0, -15), // Level Y=0
+        stat1: '< 0.5 ms',
+        stat2: '1,000 Hz Buffer',
+        stat3: 'WebSocket / TLS 1.3',
+        stat4: 'Zero-Drop Queue',
+        tags: ['Web Auth Channel', 'UPI 2.0 Ingress', 'Dynamic QR Buffer', 'Client Inbound Buffer'],
+        mathTitle: 'RAW VECTOR INGESTION',
+        mathFormula: 'V_in = [ V_login, V_upi, V_context ]',
+        mathDesc: 'Multiplexes high-concurrency interaction channels into a unified pre-PIN threat telemetry pipeline.'
+      },
+      node2: {
+        id: 'node2',
+        stepPill: 'STEP 2 OF 10: OPTICAL & LEXICAL SCAN',
+        name: '2. QR & NAME SCANNER',
+        shortName: '2. QR SCANNER',
+        domain: 'UPI FRAUD SHIELD',
+        subtitle: 'Fake ID & gallery scan check',
+        summary: 'Checks whether the QR code was scanned live or loaded from the photo gallery, and checks if the UPI ID is a lookalike scam name.',
+        deepDetails: 'Camera2 vs Intent.ACTION_PICK gallery photo check (+0.48 risk factor), hand tremor IMU sensor validation, Levenshtein distance formula for typo-squatted IDs.',
+        color: 0x2563eb,
+        hexColor: '#2563eb',
+        pos: new THREE.Vector3(-32, 0, 0), // Level Y=0
+        stat1: '< 15 ms',
+        stat2: '5,000+ Brand Trie',
+        stat3: 'Redis In-Memory',
+        stat4: 'IMU Correlated',
+        tags: ['Camera2 Live Video', 'Intent.ACTION_PICK Filter', 'IMU Hand Tremor Corr', 'Levenshtein Engine (<15ms)', 'Redis Trie Whitelist'],
+        mathTitle: 'LEVENSHTEIN EDIT DISTANCE',
+        mathFormula: 'Sim(s1, s2) = (|s1| + |s2| - D(s1, s2)) / (|s1| + |s2|)',
+        mathDesc: 'Quantifies typo-squatting edit distance. Scores >= 85% on unregistered handles trigger immediate friction.'
+      },
+      node3: {
+        id: 'node3',
+        stepPill: 'STEP 3 OF 10: PHONE SAFETY HEURISTICS',
+        name: '3. PHONE SAFETY CHECK',
+        shortName: '3. PHONE CHECK',
+        domain: 'HARDWARE & BIOMETRICS',
+        subtitle: 'Call, screen-share & typing biometrics',
+        summary: 'Detects if the user is on a phone call with a scammer, sharing their screen, or typing abnormally.',
+        deepDetails: 'AudioManager MODE_IN_CALL, DisplayManager screen-mirroring hooks, keystroke flight dynamics, and signed JWT telemetry tokens.',
+        color: 0x14b8a6,
+        hexColor: '#14b8a6',
+        pos: new THREE.Vector3(-32, 0, 15), // Level Y=0 (NO LONGER SUNKEN AT Y=-10!)
+        stat1: '< 1.0 ms',
+        stat2: '60 Hz Polling',
+        stat3: 'ECDSA Signed JWT',
+        stat4: 'Hardware Bound',
+        tags: ['AudioManager.mode Hook', 'DisplayManager Mirror Hook', 'Shannon Entropy H(D)', 'Keystroke Dwell/Flight', 'X-Aegis-Telemetry-Token'],
+        mathTitle: 'SHANNON PATH ENTROPY',
+        mathFormula: 'H(D) = - ∑ P(d_i) · log₂(P(d_i))',
+        mathDesc: 'Measures kinematic curve randomness. Automated bot scripts exhibit rigid linear vectors (H < 0.50).'
+      },
+
+      // Tier 2: Edge Security (Center-Left: X = -14)
+      node4: {
+        id: 'node4',
+        stepPill: 'STEP 4 OF 10: EDGE SECURITY & ROUTING',
+        name: '4. SECURITY GATEWAY',
+        shortName: '4. GATEWAY',
+        domain: 'EDGE REVERSE PROXY',
+        subtitle: 'Traffic inspection & router',
+        summary: 'Validates device security and routes suspicious bot traffic away from the real system.',
+        deepDetails: 'Envoy / Kong proxy, hardware HSM attestation, and deterministic routing (standard route vs ghost honeypot trap).',
+        color: 0x6366f1,
+        hexColor: '#6366f1',
+        pos: new THREE.Vector3(-14, 0, 0), // Level Y=0
+        stat1: '< 3.0 ms SLA',
+        stat2: '150,000 req/sec',
+        stat3: 'gRPC / Protobuf',
+        stat4: 'HSM Key Vault',
+        tags: ['Envoy Edge Filter', 'Play Integrity Attest', 'URL Invariance Guard', 'gRPC Stream (<3ms)', 'Shard Decision Router'],
+        mathTitle: 'SHADOW ROUTING ARBITRATION',
+        mathFormula: 'Target = (routing_tier == "ghost") ? Node8 : Node5',
+        mathDesc: 'Zero HTTP response variance prevents adversarial probe scripts from discovering sandbox shunting.'
+      },
+
+      // Tier 3: Core ML & Intelligence Engines (Center: X = 6 to 18)
+      node5: {
+        id: 'node5',
+        stepPill: 'STEP 5 OF 10: CORE MACHINE LEARNING',
+        name: '5. AI RISK BRAIN',
+        shortName: '5. AI BRAIN',
+        domain: 'CENTRAL ML ENSEMBLE',
+        subtitle: 'Central fraud score calculator',
+        summary: 'Combines all signals from UPI, Login Telemetry, and Biometrics and calculates a single risk score between 0% and 100%.',
+        deepDetails: 'C++ ONNX engine, XGBoost Model Suite (Login Honeypot, Unified UPI Risk), calibrated risk probability P in [0.00, 1.00].',
+        color: 0xa855f7,
+        hexColor: '#a855f7',
+        pos: new THREE.Vector3(6, 0, 0), // Level Y=0
+        stat1: '1.82 ms',
+        stat2: '48 Tensor Inputs',
+        stat3: 'ONNX C++ Daemon',
+        stat4: '99.4% ROC-AUC',
+        tags: ['XGBoost Ensemble', 'LightGBM Trees', 'ONNX Runtime C++', '48-Feature Tensor', 'Calibrated Score P'],
+        mathTitle: 'ENSEMBLE CALIBRATED SCORE',
+        mathFormula: 'P(Fraud) = σ( ∑ w_i · f_i(X) + α · HeuristicWeight )',
+        mathDesc: 'Fuses multi-modal behavioral, optical, and graph signals into a continuous probability mapped to deterministic cutoffs.'
+      },
+      node6: {
+        id: 'node6',
+        stepPill: 'STEP 6 OF 10: TYPO-SQUATTING SCANNER',
+        name: '6. LEVENSHTEIN FILTER',
+        shortName: '6. VPA CHECK',
+        domain: 'UPI VPA GUARD',
+        subtitle: 'VPA typo-squatting detection',
+        summary: 'Detects lookalike VPAs (e.g., ph0nepe@okaxis) impersonating verified merchant handles.',
+        deepDetails: 'Wagner-Fischer dynamic programming matrix, trigram similarity scoring under 15ms.',
+        color: 0xd946ef,
+        hexColor: '#d946ef',
+        pos: new THREE.Vector3(6, 0, -15), // Level Y=0
+        stat1: '< 15 ms',
+        stat2: 'Wagner-Fischer Matrix',
+        stat3: 'Sim >= 0.75 Cutoff',
+        stat4: 'Instant VPA Flag',
+        tags: ['Levenshtein Distance', 'VPA Typo-Squatting', 'Collect Trap Detection', 'Sub-15ms Latency'],
+        mathTitle: 'LEVENSHTEIN EDIT DISTANCE',
+        mathFormula: 'D[i,j] = min(D[i-1,j]+1, D[i,j-1]+1, D[i-1,j-1] + cost)',
+        mathDesc: 'Minimum single-character edits required to transform raw sender/receiver handle into verified dictionary token.'
+      },
+      node7: {
+        id: 'node7',
+        stepPill: 'STEP 7 OF 10: GRAPH INTELLIGENCE',
+        name: '7. SCAMMER NETWORK MAP',
+        shortName: '7. MULE MAP',
+        domain: 'MULE GRAPH SYNDICATE',
+        subtitle: 'Money mule graph tracker',
+        summary: 'Maps recipient bank accounts to see if money is being quickly cycled through mule accounts.',
+        deepDetails: 'Neo4j graph database, 1-3 hop Cypher queries uncovering laundering rings.',
+        color: 0xf97316,
+        hexColor: '#f97316',
+        pos: new THREE.Vector3(18, 0, -15), // Level Y=0 (NO LONGER SUNKEN AT Y=-10!)
+        stat1: '< 15 ms',
+        stat2: '3-Hop Fan-Out',
+        stat3: 'Cypher Query Engine',
+        stat4: 'Cluster Partitioned',
+        tags: ['Neo4j Enterprise Cluster', 'Cypher Graph Traversal', '1-to-3 Hop Fan-Out', 'Mule Ring Detection', 'Cyclic Laundering Trap'],
+        mathTitle: 'GRAPH HOP DEGREE CENTRALITY',
+        mathFormula: 'C_D(v) = deg(v) = |{u ∈ V : (u, v) ∈ E}|',
+        mathDesc: 'High in-degree velocity on newly registered beneficiary nodes exposes mule pooling accounts instantly.'
+      },
+      node8: {
+        id: 'node8',
+        stepPill: 'STEP 8 OF 10: ACTIVE DECEPTION',
+        name: '8. FAKE TRAP DASHBOARD (HONEYPOT)',
+        shortName: '8. FAKE TRAP',
+        domain: 'BOT DECEPTION SINK',
+        subtitle: 'Silent scammer trap',
+        summary: 'Catches bots and scammers in an isolated fake portal to waste their time and capture their real IP address.',
+        deepDetails: 'Synthetic ₹84,250 balance, simulated bank loading lag (800ms-1500ms), WebRTC STUN IP capture, logs exported to CSVs.',
+        color: 0xf43f5e,
+        hexColor: '#f43f5e',
+        pos: new THREE.Vector3(6, 0, 15), // Level Y=0 (NO LONGER SUNKEN AT Y=-10!)
+        stat1: '800-1500ms Delay',
+        stat2: '15-min Stall Time',
+        stat3: 'WebRTC STUN Probe',
+        stat4: '3 Telemetry CSVs',
+        tags: ['Synthetic Ghost Balance', 'Switch Lag Injection', 'Cyclic Bank Errors', 'WebRTC STUN Harvester', 'Mule Exfiltration Sink'],
+        mathTitle: 'ADVERSARIAL STALL DURATION',
+        mathFormula: 'T_stall = ∑ (t_lag_i + t_retry_i) ≈ 10 - 15 minutes',
+        mathDesc: 'Maximizes adversary dwell time while harvesting real carrier ASN and IP forensic candidates without data loss.'
+      },
+      node9: {
+        id: 'node9',
+        stepPill: 'STEP 9 OF 10: SYNDICATE DISRUPTION',
+        name: '9. CYBER CRIME ALERT',
+        shortName: '9. CYBER ALERT',
+        domain: 'POLICE & 1930 DISPATCH',
+        subtitle: 'National fraud reporting & blacklists',
+        summary: 'Automatically freezes scammer accounts and sends intelligence directly to cyber police.',
+        deepDetails: 'Instant blacklisting of harvested IPs and VPAs, automatic reporting uplink to the 1930 Cyber Crime Portal and CERT-In.',
+        color: 0xe11d48,
+        hexColor: '#e11d48',
+        pos: new THREE.Vector3(18, 0, 15), // Level Y=0 (NO LONGER CUT OFF AT BOTTOM!)
+        stat1: 'Real-Time Sync',
+        stat2: '1930 Portal Uplink',
+        stat3: 'CERT-In API',
+        stat4: 'Nationwide Blacklist',
+        tags: ['Mule VPA Freeze', 'Firewall IP Blacklisting', '1930 Cyber Crime Link', 'CERT-In Incident Feed', 'Automated Evidence Pack'],
+        mathTitle: 'LEGAL REMEDIATION DISPATCH',
+        mathFormula: 'Broadcast(Mule_VPA, IP_Candidate, Timestamp) ⟹ Freeze',
+        mathDesc: 'Provides non-repudiable audit logs compliant with Indian DPDP Act 2023 and RBI Master Directions.'
+      },
+
+      // Tier 4: Outcomes & Switch (Right: X = 32)
+      node10: {
+        id: 'node10',
+        stepPill: 'STEP 10 OF 10: SETTLEMENT ARBITRATION',
+        name: '10. FINAL DECISION (PAY OR BLOCK)',
+        shortName: '10. DECISION',
+        domain: 'MULTI-PATH SWITCH',
+        subtitle: 'Multi-path payment outcome',
+        summary: 'Path A: Instantly approves payment & shows MPIN sheet. Path B: 5-second dynamic friction countdown with prominent warning. Path C: Blocks payment completely to break coercion.',
+        deepDetails: 'ISO 20022 XML messages to NPCI/CBS for settlement, HTTP 403 Code 29 Security Coercion block, FLAG_SECURE dynamic friction modal.',
+        color: 0x10b981,
+        hexColor: '#10b981',
+        pos: new THREE.Vector3(32, 0, 0), // Level Y=0
+        stat1: '0 ms Leakage',
+        stat2: 'ISO 20022 XML',
+        stat3: '5s Safety Cooldown',
+        stat4: 'Z9 Rejection Code',
+        tags: ['Path A: Clean Settlement', 'Path B: 5s Dynamic Friction', 'Path C: HTTP 403 Z9 Block', 'Path D: Decoy Honeypot Tarpit', 'ISO 20022 CBS Dispatch'],
+        mathTitle: 'MULTI-PATH ARBITRATION MATRIX',
+        mathFormula: 'Action = (P < 0.30) ? Settle : ((P ≤ 0.70) ? Friction(5s) : Block(Z9))',
+        mathDesc: 'Enforces strict upstream intervention before MPIN entry to protect victims under active phone coercion.'
+      }
+    };
+
+    /* -------------------------------------------------------------
+       4. PROCEDURAL 3D MESH GENERATION & HIGH-CONTRAST 3D BADGES
+       ------------------------------------------------------------- */
+    const nodeMeshes = {};
+    const interactableObjects = [];
+    const animatedGimbals = [];
+
+    function makeFloatingNameSprite(text, colorHex) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 110;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = 'rgba(8, 14, 26, 0.94)';
+      ctx.strokeStyle = colorHex;
+      ctx.lineWidth = 5;
+
+      const r = 22;
+      const x = 8, y = 8, w = 496, h = 94;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = colorHex;
+      ctx.beginPath();
+      ctx.arc(44, 55, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.font = 'bold 30px "JetBrains Mono", Inter, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 72, 55);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.minFilter = THREE.LinearFilter;
+      const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
+      const sprite = new THREE.Sprite(spriteMat);
+      sprite.scale.set(6.2, 1.35, 1);
+      return sprite;
+    }
+
+    function createPedestal(data) {
+      const group = new THREE.Group();
+      group.position.copy(data.pos);
+      group.userData = data;
+
+      // 1. Lower beveled cylinder base (resting on Y=0)
+      const baseGeo = new THREE.CylinderGeometry(4.6, 5.2, 1.2, 32);
+      const baseMat = new THREE.MeshPhysicalMaterial({
+        color: 0x111827,
+        roughness: 0.25,
+        metalness: 0.8,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.1
+      });
+      const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+      baseMesh.position.y = 0.6;
+      baseMesh.receiveShadow = true;
+      group.add(baseMesh);
+
+      // 2. Base glowing neon ring
+      const ringGeo = new THREE.TorusGeometry(5.0, 0.09, 16, 64);
+      const ringMat = new THREE.MeshBasicMaterial({ color: data.color });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2;
+      ringMesh.position.y = 0.05;
+      group.add(ringMesh);
+
+      // 3. Upper frosted glass platform
+      const topGeo = new THREE.CylinderGeometry(4.0, 4.3, 0.8, 32);
+      const topMat = new THREE.MeshPhysicalMaterial({
+        color: 0x1e293b,
+        roughness: 0.1,
+        metalness: 0.3,
+        transmission: 0.65,
+        thickness: 1.2,
+        opacity: 0.88,
+        transparent: true
+      });
+      const topMesh = new THREE.Mesh(topGeo, topMat);
+      topMesh.position.y = 1.6;
+      group.add(topMesh);
+
+      // 4. Point light for neon ambiance
+      const pLight = new THREE.PointLight(data.color, 2.6, 20);
+      pLight.position.y = 3.5;
+      group.add(pLight);
+
+      // 5. Unique 3D Cyber Mechanical Artifacts
+      if (data.id === 'node1') {
+        for (let i = 0; i < 3; i++) {
+          const angle = (i / 3) * Math.PI * 2;
+          const pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.8), new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.6 }));
+          pMesh.position.set(Math.cos(angle) * 2.2, 3.4, Math.sin(angle) * 2.2);
+          group.add(pMesh);
+        }
+        const centerHub = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 1.8, 16), new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true }));
+        centerHub.position.y = 3.4;
+        group.add(centerHub);
+        animatedGimbals.push({ mesh: centerHub, speedY: 0.02 });
+
+      } else if (data.id === 'node2') {
+        const lensMesh = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.15, 16, 32), new THREE.MeshBasicMaterial({ color: 0x2563eb }));
+        lensMesh.rotation.x = Math.PI / 2.5;
+        lensMesh.position.y = 3.6;
+        group.add(lensMesh);
+
+        const trieMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 2.6, 6), new THREE.MeshStandardMaterial({ color: 0x1d4ed8, wireframe: true, emissive: 0x2563eb, emissiveIntensity: 0.4 }));
+        trieMesh.position.y = 3.6;
+        group.add(trieMesh);
+        animatedGimbals.push({ mesh: trieMesh, speedY: 0.03, speedX: 0.01 });
+
+      } else if (data.id === 'node3') {
+        const radarMesh = new THREE.Mesh(new THREE.RingGeometry(1.8, 3.2, 32), new THREE.MeshBasicMaterial({ color: 0x14b8a6, side: THREE.DoubleSide, transparent: true, opacity: 0.5, wireframe: true }));
+        radarMesh.rotation.x = Math.PI / 2;
+        radarMesh.position.y = 2.1;
+        group.add(radarMesh);
+        animatedGimbals.push({ mesh: radarMesh, speedZ: -0.025 });
+
+        const octMesh = new THREE.Mesh(new THREE.OctahedronGeometry(1.4, 0), new THREE.MeshStandardMaterial({ color: 0x0d9488, emissive: 0x14b8a6, emissiveIntensity: 0.7, metalness: 0.8 }));
+        octMesh.position.y = 3.8;
+        group.add(octMesh);
+        animatedGimbals.push({ mesh: octMesh, speedX: 0.02, speedY: 0.02, float: true, baseY: 3.8 });
+
+      } else if (data.id === 'node4') {
+        const gateMesh = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.18, 16, 6), new THREE.MeshStandardMaterial({ color: 0x6366f1, emissive: 0x4f46e5, emissiveIntensity: 0.8, metalness: 0.9 }));
+        gateMesh.position.y = 3.8;
+        group.add(gateMesh);
+        animatedGimbals.push({ mesh: gateMesh, speedY: 0.015, speedZ: 0.01 });
+
+        const coreCube = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.4), new THREE.MeshBasicMaterial({ color: 0x818cf8, wireframe: true }));
+        coreCube.position.y = 3.8;
+        group.add(coreCube);
+        animatedGimbals.push({ mesh: coreCube, speedX: -0.02, speedY: -0.02 });
+
+      } else if (data.id === 'node5') {
+        topMesh.scale.set(1.22, 1.22, 1.22);
+        baseMesh.scale.set(1.22, 1.22, 1.22);
+
+        const icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0, 1), new THREE.MeshStandardMaterial({ color: 0xa855f7, emissive: 0x9333ea, emissiveIntensity: 0.85, metalness: 0.9, wireframe: true }));
+        icoMesh.position.y = 4.2;
+        group.add(icoMesh);
+        animatedGimbals.push({ mesh: icoMesh, speedX: 0.02, speedY: 0.03, float: true, baseY: 4.2 });
+
+        const g1Mesh = new THREE.Mesh(new THREE.TorusGeometry(3.0, 0.12, 16, 48), new THREE.MeshBasicMaterial({ color: 0xa855f7 }));
+        g1Mesh.position.y = 4.2;
+        group.add(g1Mesh);
+        animatedGimbals.push({ mesh: g1Mesh, speedX: 0.025 });
+
+        const g2Mesh = new THREE.Mesh(new THREE.TorusGeometry(3.6, 0.08, 16, 48), new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true }));
+        g2Mesh.position.y = 4.2;
+        group.add(g2Mesh);
+        animatedGimbals.push({ mesh: g2Mesh, speedY: -0.02, speedZ: 0.015 });
+
+      } else if (data.id === 'node6') {
+        const globeMesh = new THREE.Mesh(new THREE.SphereGeometry(1.6, 16, 16), new THREE.MeshBasicMaterial({ color: 0xd946ef, wireframe: true, transparent: true, opacity: 0.6 }));
+        globeMesh.position.y = 3.6;
+        group.add(globeMesh);
+        animatedGimbals.push({ mesh: globeMesh, speedY: 0.03 });
+
+        const orbitArc = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.1, 16, 32), new THREE.MeshStandardMaterial({ color: 0xf472b6, emissive: 0xd946ef, emissiveIntensity: 0.8 }));
+        orbitArc.rotation.x = Math.PI / 3;
+        orbitArc.position.y = 3.6;
+        group.add(orbitArc);
+        animatedGimbals.push({ mesh: orbitArc, speedZ: 0.04 });
+
+      } else if (data.id === 'node7') {
+        const graphGroup = new THREE.Group();
+        graphGroup.position.y = 3.6;
+        for (let i = 0; i < 5; i++) {
+          const angle = (i / 5) * Math.PI * 2;
+          const nodeDot = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), new THREE.MeshStandardMaterial({ color: 0xf97316, emissive: 0xf97316, emissiveIntensity: 0.9 }));
+          nodeDot.position.set(Math.cos(angle) * 1.8, Math.sin(angle * 2) * 0.5, Math.sin(angle) * 1.8);
+          graphGroup.add(nodeDot);
+        }
+        const centerHub = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8, 0), new THREE.MeshBasicMaterial({ color: 0xfb923c, wireframe: true }));
+        graphGroup.add(centerHub);
+        group.add(graphGroup);
+        animatedGimbals.push({ mesh: graphGroup, speedY: 0.025, speedX: 0.015 });
+
+      } else if (data.id === 'node8') {
+        for (let i = 0; i < 6; i++) {
+          const angle = (i / 6) * Math.PI * 2;
+          const laserMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 4.0, 8), new THREE.MeshBasicMaterial({ color: 0xf43f5e }));
+          laserMesh.position.set(Math.cos(angle) * 2.8, 3.6, Math.sin(angle) * 2.8);
+          group.add(laserMesh);
+        }
+        const knotMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1.0, 0.28, 48, 12), new THREE.MeshStandardMaterial({ color: 0xe11d48, emissive: 0x9f1239, emissiveIntensity: 0.9 }));
+        knotMesh.position.y = 3.6;
+        group.add(knotMesh);
+        animatedGimbals.push({ mesh: knotMesh, speedX: 0.03, speedY: 0.02, float: true, baseY: 3.6 });
+
+      } else if (data.id === 'node9') {
+        const dishMesh = new THREE.Mesh(new THREE.ConeGeometry(1.6, 1.2, 16), new THREE.MeshStandardMaterial({ color: 0xe11d48, emissive: 0xbe123c, emissiveIntensity: 0.7 }));
+        dishMesh.rotation.x = Math.PI / 1.4;
+        dishMesh.position.y = 3.6;
+        group.add(dishMesh);
+        animatedGimbals.push({ mesh: dishMesh, speedY: 0.03 });
+
+        const pulseRing = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.08, 16, 32), new THREE.MeshBasicMaterial({ color: 0xf43f5e, wireframe: true }));
+        pulseRing.rotation.x = Math.PI / 2;
+        pulseRing.position.y = 4.2;
+        group.add(pulseRing);
+        animatedGimbals.push({ mesh: pulseRing, speedZ: 0.02 });
+
+      } else if (data.id === 'node10') {
+        const colors = [0x10b981, 0xf59e0b, 0xef4444];
+        for (let i = 0; i < 3; i++) {
+          const angle = (i / 3) * Math.PI * 2;
+          const beaconMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 2.2, 16), new THREE.MeshStandardMaterial({ color: colors[i], emissive: colors[i], emissiveIntensity: 0.8 }));
+          beaconMesh.position.set(Math.cos(angle) * 1.8, 3.4, Math.sin(angle) * 1.8);
+          group.add(beaconMesh);
+        }
+        const switchRing = new THREE.Mesh(new THREE.TorusGeometry(2.6, 0.1, 16, 48), new THREE.MeshBasicMaterial({ color: 0x10b981 }));
+        switchRing.rotation.x = Math.PI / 2;
+        switchRing.position.y = 3.6;
+        group.add(switchRing);
+        animatedGimbals.push({ mesh: switchRing, speedZ: 0.025 });
+      }
+
+      // 6. Floating 3D Canvas Name Tag Badge (Crisp & High-Contrast)
+      const nameSprite = makeFloatingNameSprite(data.shortName, data.hexColor);
+      nameSprite.position.y = 6.0;
+      group.add(nameSprite);
+
+      // Raycast hit cylinder
+      const hitGeo = new THREE.CylinderGeometry(5.2, 5.6, 7.5, 16);
+      const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+      const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+      hitMesh.position.y = 3.5;
+      hitMesh.userData = data;
+      group.add(hitMesh);
+      interactableObjects.push(hitMesh);
+
+      scene.add(group);
+      nodeMeshes[data.id] = group;
+      return group;
+    }
+
+    Object.values(NODES).forEach(data => createPedestal(data));
+
+    /* -------------------------------------------------------------
+       5. LEVEL PLANAR CONDUITS (AT Y = 1.8 - NO UNDERGROUND PIPES)
+       ------------------------------------------------------------- */
+    const curves = {
+      n1_to_n4: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-32, 1.8, -15),
+        new THREE.Vector3(-23, 1.8, -7),
+        new THREE.Vector3(-14, 1.8, 0)
+      ]),
+      n2_to_n4: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-32, 1.8, 0),
+        new THREE.Vector3(-23, 1.8, 0),
+        new THREE.Vector3(-14, 1.8, 0)
+      ]),
+      n3_to_n4: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-32, 1.8, 15),
+        new THREE.Vector3(-23, 1.8, 7),
+        new THREE.Vector3(-14, 1.8, 0)
+      ]),
+      n4_to_n5: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-14, 1.8, 0),
+        new THREE.Vector3(-4, 1.8, 0),
+        new THREE.Vector3(6, 1.8, 0)
+      ]),
+      n4_to_n8: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-14, 1.8, 0),
+        new THREE.Vector3(-4, 1.8, 8),
+        new THREE.Vector3(6, 1.8, 15)
+      ]),
+      n5_to_n6: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(6, 1.8, 0),
+        new THREE.Vector3(6, 1.8, -7),
+        new THREE.Vector3(6, 1.8, -15)
+      ]),
+      n6_to_n7: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(6, 1.8, -15),
+        new THREE.Vector3(12, 1.8, -15),
+        new THREE.Vector3(18, 1.8, -15)
+      ]),
+      n5_to_n7: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(6, 1.8, 0),
+        new THREE.Vector3(12, 1.8, -8),
+        new THREE.Vector3(18, 1.8, -15)
+      ]),
+      n8_to_n9: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(6, 1.8, 15),
+        new THREE.Vector3(12, 1.8, 15),
+        new THREE.Vector3(18, 1.8, 15)
+      ]),
+      n5_to_n10: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(6, 1.8, 0),
+        new THREE.Vector3(19, 1.8, 0),
+        new THREE.Vector3(32, 1.8, 0)
+      ]),
+      n10_pathA: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(32, 1.8, 0),
+        new THREE.Vector3(40, 1.8, -6),
+        new THREE.Vector3(46, 1.8, -12)
+      ]),
+      n10_pathB: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(32, 1.8, 0),
+        new THREE.Vector3(40, 1.8, 0),
+        new THREE.Vector3(46, 1.8, 0)
+      ]),
+      n10_pathC: new THREE.CatmullRomCurve3([
+        new THREE.Vector3(32, 1.8, 0),
+        new THREE.Vector3(40, 1.8, 6),
+        new THREE.Vector3(46, 1.8, 12)
+      ])
+    };
+
+    function buildPipe(curve, color) {
+      const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.36, 12, false);
+      const tubeMat = new THREE.MeshPhysicalMaterial({
+        color: 0x09101d,
+        emissive: color,
+        emissiveIntensity: 0.18,
+        roughness: 0.1,
+        metalness: 0.5,
+        transmission: 0.7,
+        opacity: 0.45,
+        transparent: true
+      });
+      scene.add(new THREE.Mesh(tubeGeo, tubeMat));
+
+      const wireGeo = new THREE.TubeGeometry(curve, 64, 0.09, 6, false);
+      const wireMat = new THREE.MeshBasicMaterial({ color: color, wireframe: true, transparent: true, opacity: 0.35 });
+      scene.add(new THREE.Mesh(wireGeo, wireMat));
+    }
+
+    buildPipe(curves.n1_to_n4, 0x00e5ff);
+    buildPipe(curves.n2_to_n4, 0x2563eb);
+    buildPipe(curves.n3_to_n4, 0x14b8a6);
+    buildPipe(curves.n4_to_n5, 0x6366f1);
+    buildPipe(curves.n4_to_n8, 0xf43f5e);
+    buildPipe(curves.n5_to_n6, 0xd946ef);
+    buildPipe(curves.n6_to_n7, 0xf97316);
+    buildPipe(curves.n5_to_n7, 0xf97316);
+    buildPipe(curves.n8_to_n9, 0xe11d48);
+    buildPipe(curves.n5_to_n10, 0xa855f7);
+    buildPipe(curves.n10_pathA, 0x10b981);
+    buildPipe(curves.n10_pathB, 0xf59e0b);
+    buildPipe(curves.n10_pathC, 0xef4444);
+
+    /* -------------------------------------------------------------
+       6. LIVE FLOWING NEON ENERGY PULSES
+       ------------------------------------------------------------- */
+    const PARTICLE_COUNT = 220;
+    const particles = [];
+    let pulseSpeedMultiplier = 1.0;
+    let isPaused = false;
+    let currentTrafficMode = 'balanced';
+
+    function createPulseTexture(colorHex) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.3, colorHex);
+      grad.addColorStop(0.8, colorHex + '33');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    const textures = {
+      cyan: createPulseTexture('#00e5ff'),
+      blue: createPulseTexture('#2563eb'),
+      teal: createPulseTexture('#14b8a6'),
+      indigo: createPulseTexture('#6366f1'),
+      purple: createPulseTexture('#a855f7'),
+      magenta: createPulseTexture('#d946ef'),
+      orange: createPulseTexture('#f97316'),
+      red: createPulseTexture('#f43f5e'),
+      ruby: createPulseTexture('#e11d48'),
+      green: createPulseTexture('#10b981'),
+      amber: createPulseTexture('#f59e0b')
+    };
+
+    class EnergyPulse {
+      constructor(index) {
+        this.index = index;
+        this.reset(true);
+
+        const mat = new THREE.SpriteMaterial({
+          map: textures.cyan,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          opacity: 0.95
+        });
+        this.sprite = new THREE.Sprite(mat);
+        this.sprite.scale.set(1.1, 1.1, 1.1);
+        scene.add(this.sprite);
+      }
+
+      reset(initial = false) {
+        this.stage = 0;
+        this.t = initial ? Math.random() : 0.0;
+        this.speed = 0.005 + Math.random() * 0.004;
+
+        const randStart = Math.random();
+        if (randStart < 0.33) {
+          this.curve = curves.n1_to_n4;
+          this.startTexture = textures.cyan;
+        } else if (randStart < 0.66) {
+          this.curve = curves.n2_to_n4;
+          this.startTexture = textures.blue;
+        } else {
+          this.curve = curves.n3_to_n4;
+          this.startTexture = textures.teal;
+        }
+
+        if (this.sprite) this.sprite.material.map = this.startTexture;
+      }
+
+      update(delta) {
+        if (isPaused) return;
+        this.t += this.speed * pulseSpeedMultiplier * (delta * 60);
+
+        if (this.t >= 1.0) {
+          this.t = 0.0;
+
+          if (this.stage === 0) {
+            this.stage = 1;
+            const roll = Math.random();
+            let isMalicious = false;
+            if (currentTrafficMode === 'bot_attack') isMalicious = true;
+            else if (currentTrafficMode === 'attack') isMalicious = (roll < 0.85);
+            else if (currentTrafficMode === 'legitimate') isMalicious = false;
+            else isMalicious = (roll < 0.12);
+
+            if (isMalicious) {
+              this.curve = curves.n4_to_n8;
+              this.sprite.material.map = textures.red;
+              this.isHoneypotTrack = true;
+            } else {
+              this.curve = curves.n4_to_n5;
+              this.sprite.material.map = textures.indigo;
+              this.isHoneypotTrack = false;
+            }
+
+          } else if (this.stage === 1) {
+            if (this.isHoneypotTrack) {
+              this.stage = 2;
+              this.curve = curves.n8_to_n9;
+              this.sprite.material.map = textures.ruby;
+            } else {
+              this.stage = 2;
+              const subRoll = Math.random();
+              if (currentTrafficMode === 'speed_attack' || subRoll < 0.25) {
+                this.curve = curves.n5_to_n6;
+                this.sprite.material.map = textures.magenta;
+              } else if (subRoll < 0.50) {
+                this.curve = curves.n5_to_n7;
+                this.sprite.material.map = textures.orange;
+              } else {
+                this.curve = curves.n5_to_n10;
+                this.sprite.material.map = textures.purple;
+              }
+            }
+
+          } else if (this.stage === 2) {
+            if (this.curve === curves.n5_to_n10) {
+              this.stage = 3;
+              const outcomeRoll = Math.random();
+              if (currentTrafficMode === 'legitimate' || (currentTrafficMode === 'balanced' && outcomeRoll < 0.70)) {
+                this.curve = curves.n10_pathA;
+                this.sprite.material.map = textures.green;
+              } else if (currentTrafficMode === 'friction' || (currentTrafficMode === 'balanced' && outcomeRoll < 0.90)) {
+                this.curve = curves.n10_pathB;
+                this.sprite.material.map = textures.amber;
+              } else {
+                this.curve = curves.n10_pathC;
+                this.sprite.material.map = textures.red;
+              }
+            } else {
+              this.reset();
+            }
+
+          } else {
+            this.reset();
+          }
+        }
+
+        const pos = this.curve.getPointAt(this.t);
+        this.sprite.position.copy(pos);
+      }
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push(new EnergyPulse(i));
+    }
+
+    /* -------------------------------------------------------------
+       7. INTERACTION: RAYCASTING, HOVER & INSPECTOR
+       ------------------------------------------------------------- */
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let hoveredNodeId = null;
+    let activeSelectedNode = NODES.node1;
+    let isDrawerOpen = true;
+
+    const tooltipEl = document.getElementById('hover-tooltip');
+    const tooltipTextEl = document.getElementById('tooltip-text');
+    const tooltipDotEl = document.getElementById('tooltip-dot');
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(interactableObjects);
+
+      if (intersects.length > 0) {
+        const data = intersects[0].object.userData;
+        hoveredNodeId = data.id;
+        document.body.style.cursor = 'pointer';
+
+        tooltipEl.style.opacity = '1';
+        tooltipEl.style.left = `${e.clientX}px`;
+        tooltipEl.style.top = `${e.clientY - 20}px`;
+        tooltipTextEl.innerText = data.shortName;
+        tooltipDotEl.style.backgroundColor = data.hexColor;
+
+      } else {
+        hoveredNodeId = null;
+        document.body.style.cursor = 'default';
+        tooltipEl.style.opacity = '0';
+      }
+    });
+
+    window.addEventListener('click', () => {
+      if (hoveredNodeId && NODES[hoveredNodeId]) {
+        selectNode(NODES[hoveredNodeId]);
+      }
+    });
+
+    function selectNode(data) {
+      activeSelectedNode = data;
+      document.getElementById('node-tag-pill').innerText = data.stepPill;
+      document.getElementById('node-tag-pill').style.color = data.hexColor;
+      document.getElementById('node-domain').innerText = data.domain;
+      document.getElementById('node-title').children[0].innerText = data.name;
+      document.getElementById('node-subtitle').innerText = data.subtitle;
+      document.getElementById('node-subtitle').style.color = data.hexColor;
+      document.getElementById('node-summary').innerText = data.summary;
+      document.getElementById('node-deep-details').innerText = data.deepDetails;
+      document.getElementById('node-stat-1').innerText = data.stat1;
+      document.getElementById('node-stat-2').innerText = data.stat2;
+      document.getElementById('node-stat-3').innerText = data.stat3;
+      document.getElementById('node-stat-4').innerText = data.stat4;
+      document.getElementById('node-math-title').innerText = data.mathTitle;
+      document.getElementById('node-math-formula').innerText = data.mathFormula;
+      document.getElementById('node-math-desc').innerText = data.mathDesc;
+
+      document.querySelectorAll('.node-nav-badge').forEach(b => b.classList.remove('active'));
+      const activeBadge = document.getElementById(`nav-badge-${data.id}`);
+      if (activeBadge) activeBadge.classList.add('active');
+
+      const tagsContainer = document.getElementById('node-tags');
+      tagsContainer.innerHTML = '';
+      data.tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'text-[10px] px-2 py-0.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700 mono';
+        span.innerText = tag;
+        tagsContainer.appendChild(span);
+      });
+
+      const targetGroup = nodeMeshes[data.id];
+      if (targetGroup) {
+        targetGroup.children.forEach(c => {
+          if (c.isPointLight) {
+            c.intensity = 5.2;
+            setTimeout(() => { c.intensity = 2.6; }, 600);
+          }
+        });
+      }
+    }
+
+    function toggleTechDrawer() {
+      isDrawerOpen = !isDrawerOpen;
+      const drawer = document.getElementById('tech-drawer');
+      const arrow = document.getElementById('drawer-arrow');
+      drawer.style.display = isDrawerOpen ? 'block' : 'none';
+      arrow.style.transform = isDrawerOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
+    }
+
+    let camTargetPos = null;
+    let camLookTarget = null;
+
+    function lerpCameraTo(pos, lookAt) {
+      camTargetPos = pos.clone();
+      camLookTarget = lookAt.clone();
+    }
+
+    function focusNodeById(nodeId) {
+      const data = NODES[nodeId];
+      if (!data) return;
+      selectNode(data);
+      const target = data.pos;
+      const offset = new THREE.Vector3(12, 10, 16);
+      lerpCameraTo(target.clone().add(offset), target);
+    }
+
+    function focusCurrentNode() {
+      if (activeSelectedNode) {
+        focusNodeById(activeSelectedNode.id);
+      }
+    }
+
+    function setCameraPreset(preset) {
+      document.querySelectorAll('.cam-btn').forEach(btn => btn.classList.remove('active', 'bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40'));
+      event.currentTarget.classList.add('active', 'bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+
+      if (preset === 'isometric') {
+        lerpCameraTo(defaultCamPos, defaultCamTarget);
+      } else if (preset === 'tier1') {
+        lerpCameraTo(new THREE.Vector3(-16, 18, 22), new THREE.Vector3(-32, 0, 0));
+        selectNode(NODES.node1);
+      } else if (preset === 'tier2') {
+        lerpCameraTo(new THREE.Vector3(0, 12, 18), new THREE.Vector3(-14, 0, 0));
+        selectNode(NODES.node4);
+      } else if (preset === 'tier3') {
+        lerpCameraTo(new THREE.Vector3(18, 16, 22), new THREE.Vector3(10, 0, 0));
+        selectNode(NODES.node5);
+      } else if (preset === 'tier4') {
+        lerpCameraTo(new THREE.Vector3(44, 16, 16), new THREE.Vector3(32, 0, 0));
+        selectNode(NODES.node10);
+      } else if (preset === 'top') {
+        lerpCameraTo(new THREE.Vector3(0, 85, 4), new THREE.Vector3(0, 0, 0));
+      }
+    }
+
+    /* -------------------------------------------------------------
+       8. MULTI-VECTOR SIMULATION SURGE MODES
+       ------------------------------------------------------------- */
+    function setTrafficMode(mode) {
+      currentTrafficMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-500/20', 'text-indigo-300', 'border-indigo-500/40');
+        btn.classList.add('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+      });
+
+      const activeBtn = document.getElementById(`mode-${mode}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+        activeBtn.classList.add('bg-indigo-500/20', 'text-indigo-300', 'border-indigo-500/40');
+      }
+    }
+
+    function setSpeed(spd) {
+      pulseSpeedMultiplier = spd;
+      document.getElementById('speed-label').innerText = spd.toFixed(1) + 'x';
+      document.querySelectorAll('.speed-btn').forEach(btn => btn.classList.remove('active', 'bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40'));
+      event.currentTarget.classList.add('active', 'bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      const btn = document.getElementById('pause-btn');
+      btn.innerText = isPaused ? 'RESUME' : 'PAUSE';
+      btn.style.color = isPaused ? '#10b981' : '#cbd5e1';
+    }
+
+    /* -------------------------------------------------------------
+       9. LIVE MULTI-DOMAIN TELEMETRY TICKER LOGS
+       ------------------------------------------------------------- */
+    const tickerLogs = [
+      '[1. INBOUND] Payment intent captured: UPI 2.0 Dynamic QR Standee scan',
+      '[2. QR SCAN] Live Camera2 API verified with IMU hand tremor correlation (0.042g)',
+      '[2. QR SCAN] Levenshtein engine: VPA "rahulgear@okaxis" is clean (0% brand spoof)',
+      '[3. PHONE CHECK] Call state: IDLE (No scammer on call) | Screen Share: INACTIVE',
+      '[3. PHONE CHECK] Typing dynamics H(D) = 0.92 (Human curve verified at 60 Hz)',
+      '[4. GATEWAY] Hardware Attestation verified | Forwarding gRPC to AI Risk Brain',
+      '[5. AI BRAIN] XGBoost Model 3 evaluated 48 features -> Risk Score: 4.2% (Safe)',
+      '[10. DECISION] Path A Approved: Authentic MPIN keypad displayed to user',
+      '[10. DECISION] Transaction settled via NPCI Switch & ISO 20022 XML (1.4ms)',
+      '[1. INBOUND] Collect request payment initiated: Target VPA 'paytm-refund@okaxis' for ₹4,999',
+      '[6. VPA CHECK] Levenshtein Engine: Similarity 0.94 against verified 'paytm' handle -> Typo-squatting alert',
+      '[6. VPA CHECK] Impersonated brand handle confirmed -> Dispatch Tier 3 Upstream Gateway Rejection',
+      '[1. INBOUND] Web Login: 3 consecutive failed passwords with H(D) = 0.32 (Linear Bot)',
+      '[4. GATEWAY] Decoy Triggered: Shunted bot session to Node 8 Fake Trap Dashboard',
+      '[8. FAKE TRAP] Stalling botnet attacker with synthetic ₹84,250 balance & 1200ms lag',
+      '[8. FAKE TRAP] WebRTC STUN query captured adversary public IP: 103.21.144.88',
+      '[7. MULE MAP] Cypher 3-hop query identified mule fan-out cluster connected to 4 dummy VPAs',
+      '[9. SOC ALERT] Mule account frozen across switch & evidence uploaded to 1930 Cyber Portal'
+    ];
+
+    const tickerEl = document.getElementById('telemetry-ticker');
+    function populateTicker() {
+      tickerLogs.forEach(log => {
+        const item = document.createElement('span');
+        item.className = 'inline-block mr-8';
+        if (log.includes('Impossible travel') || log.includes('FAKE TRAP') || log.includes('Botnet') || log.includes('Auto-freeze')) {
+          item.className += ' text-rose-400 font-bold';
+        } else if (log.includes('Mule') || log.includes('Friction') || log.includes('Decoy')) {
+          item.className += ' text-amber-400 font-semibold';
+        } else if (log.includes('Path A Approved') || log.includes('settled') || log.includes('clean')) {
+          item.className += ' text-emerald-400';
+        } else {
+          item.className += ' text-cyan-300';
+        }
+        item.innerText = log;
+        tickerEl.appendChild(item);
+      });
+    }
+    populateTicker();
+    populateTicker();
+
+    /* -------------------------------------------------------------
+       10. ANIMATION & RENDER LOOP (60 FPS)
+       ------------------------------------------------------------- */
+    const clock = new THREE.Clock();
+    let frameCount = 0;
+    let lastFpsUpdate = performance.now();
+    const fpsEl = document.getElementById('hud-fps');
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+      const elapsedTime = clock.getElapsedTime();
+
+      frameCount++;
+      if (performance.now() - lastFpsUpdate >= 1000) {
+        fpsEl.innerText = frameCount;
+        frameCount = 0;
+        lastFpsUpdate = performance.now();
+      }
+
+      if (camTargetPos && camLookTarget) {
+        camera.position.lerp(camTargetPos, 0.05);
+        controls.target.lerp(camLookTarget, 0.05);
+        if (camera.position.distanceTo(camTargetPos) < 0.1) {
+          camTargetPos = null;
+          camLookTarget = null;
+        }
+      }
+
+      animatedGimbals.forEach(item => {
+        if (item.speedX) item.mesh.rotation.x += item.speedX;
+        if (item.speedY) item.mesh.rotation.y += item.speedY;
+        if (item.speedZ) item.mesh.rotation.z += item.speedZ;
+        if (item.float) {
+          item.mesh.position.y = item.baseY + Math.sin(elapsedTime * 2.5 + item.baseY) * 0.25;
+        }
+      });
+
+      particles.forEach(p => p.update(delta));
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    selectNode(NODES.node1);
+  </script>
+</body>
+</html>

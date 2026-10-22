@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Project Aegis - Bot Attack Simulator Extension",
+  "version": "1.2.0",
+  "description": "Simulates automated headless bots, linear cursor paths, and instant 0ms credential stuffing against Project Aegis.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["*://127.0.0.1:*/*", "*://localhost:*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Aegis Bot Injector"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://127.0.0.1:*/*", "*://localhost:*/*"],
+      "js": ["bot-injector.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

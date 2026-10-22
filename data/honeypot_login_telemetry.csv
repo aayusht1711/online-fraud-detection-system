@@ -1,0 +1,11 @@
+session_id,failed_attempts,typing_speed_similarity,mouse_movement_entropy,is_new_device,vpn_data_center_flag,target_honeypot_action,attack_type
+S_BOT_01,3,0.02,0.18,1,1,1,Selenium Headless WebDriver
+S_BOT_02,5,0.00,0.05,1,1,1,Instant Clipboard Injector
+S_BOT_03,2,0.14,0.38,1,0,1,Linear Cursor Bot
+S_BOT_04,4,0.08,0.22,0,1,1,Credential Stuffing Script
+S_BOT_05,3,0.11,0.45,1,1,1,AnyDesk Remote Proxy Jitter
+S_HUM_01,0,0.94,2.85,0,0,0,Legitimate Human Desktop
+S_HUM_02,1,0.89,3.12,0,0,0,Legitimate Human Touchpad
+S_HUM_03,0,0.92,2.64,1,0,0,New Device Genuine User
+S_HUM_04,1,0.86,3.45,0,0,0,Legitimate Casual Typing
+S_HUM_05,0,0.96,2.98,0,0,0,Fast Typist Genuine User

@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Project Aegis: Run Flask Server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/app.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "FLASK_ENV": "development",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "args": []
+    },
+    {
+      "name": "Project Aegis: Debug Flask App (Module)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "flask",
+      "env": {
+        "FLASK_APP": "src/app.py",
+        "FLASK_DEBUG": "1"
+      },
+      "args": [
+        "run",
+        "--host=127.0.0.1",
+        "--port=5000",
+        "--no-debugger",
+        "--no-reload"
+      ],
+      "jinja": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Project Aegis: Test Bot CSV Telemetry",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/test_bot_csv.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
