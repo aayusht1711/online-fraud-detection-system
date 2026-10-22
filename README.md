@@ -223,8 +223,4 @@ python -m unittest discover tests
 }
 ```
 
----
 
-## 📄 License & Academic Attribution
-Developed for UPES Major Project by **Team SafeSight**.
-Complies with Reserve Bank of India (RBI) Master Directions on Digital Payment Security Controls and the Digital Personal Data Protection (DPDP) Act 2023.
