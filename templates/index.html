@@ -1664,8 +1664,8 @@
                         </div>
 
                         <!-- 3 Quick Simulation Scenario Presets -->
-                        <div class="pt-2 border-t border-white/5">
-                            <span class="text-[10px] text-slate-400 font-medium block mb-1.5">⚡ Pre-Configured Social Engineering Threat Profiles:</span>
+                        <div class="pt-2 border-t border-white/5 space-y-2">
+                            <span class="text-[10px] text-slate-400 font-medium block">⚡ Pre-Configured Social Engineering Threat Profiles:</span>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-xs">
                                 <button type="button" onclick="loadUpiThreatProfile('clean')" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 text-[10px] font-medium flex items-center gap-1.5 transition cursor-pointer">
                                     <i class="fa-solid fa-circle-check text-emerald-400 text-[9px]"></i> 1. Clean Store
@@ -1674,9 +1674,14 @@
                                     <i class="fa-solid fa-clock text-amber-400 text-[9px]"></i> 2. Phishing QR (Friction)
                                 </button>
                                 <button type="button" onclick="loadUpiThreatProfile('coercion')" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-500/30 text-rose-300 text-[10px] font-medium flex items-center gap-1.5 transition cursor-pointer">
-                                    <i class="fa-solid fa-triangle-exclamation text-rose-400 text-[9px]"></i> 3. AnyDesk Scam (Block)
+                                    <i class="fa-solid fa-triangle-exclamation text-rose-400 text-[9px]"></i> 3. AnyDesk Scam
                                 </button>
                             </div>
+                            <!-- One-Tap Google Pay Disclaimer Tester -->
+                            <button type="button" onclick="testGooglePayDisclaimerAction()" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-700 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-900/40 transition cursor-pointer active:scale-98">
+                                <i class="fa-solid fa-shield-halved text-amber-300 animate-pulse"></i>
+                                <span>⚠️ Test Google Pay Screen-Share / Call Disclaimer</span>
+                            </button>
                         </div>
                     </div>
 
@@ -3182,6 +3187,11 @@
             evaluateUpiRiskLive();
         }
 
+        async function testGooglePayDisclaimerAction() {
+            loadUpiThreatProfile('coercion');
+            await payUPIAction();
+        }
+
         async function checkVPAEngineLive() {
             await evaluateUpiRiskLive();
         }
@@ -4069,20 +4079,25 @@
                 <div class="w-16 h-16 rounded-full bg-rose-500/20 border-2 border-rose-400 flex items-center justify-center text-rose-400 text-3xl mx-auto mb-2 shadow-lg shadow-rose-500/40 animate-bounce">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <span class="text-[10px] font-mono uppercase tracking-widest text-rose-400 font-black block">UPSTREAM API GATEWAY INTERCEPTION</span>
-                <h3 class="text-lg font-black text-white">🚨 TRANSACTION REJECTED BY AEGIS SHIELD</h3>
-                <p class="text-xs text-rose-300/90 mt-1 font-medium">Pre-PIN Coercion Interception &bull; ZERO FUNDS DEBITED</p>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-950/80 border border-rose-500/40 text-[10px] font-mono uppercase tracking-widest text-rose-300 font-bold mb-1.5">
+                    <i class="fa-brands fa-google text-xs text-rose-400"></i> Google Pay &bull; NPCI Security Protocol
+                </div>
+                <h3 class="text-lg font-black text-white">⚠️ SCREEN SHARING / CALL DETECTED</h3>
+                <p class="text-xs text-rose-300/90 mt-0.5 font-medium">Payment Authorization Blocked &bull; ZERO FUNDS DEBITED</p>
             </div>
 
-            <!-- Simulated FLAG_SECURE Banner -->
-            <div class="p-3 bg-rose-950/80 border border-rose-700/80 rounded-2xl space-y-1.5 text-xs relative z-10">
+            <!-- Authentic Google Pay & UPI Security Disclaimer -->
+            <div class="p-3.5 bg-rose-950/80 border border-rose-700/80 rounded-2xl space-y-2 text-xs relative z-10">
                 <div class="flex items-center gap-2 text-rose-300 font-bold text-[11px] pb-1 border-b border-rose-800/60">
-                    <i class="fa-solid fa-lock"></i>
-                    <span>OS Window Protection (FLAG_SECURE Active)</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                    <span>Security Disclaimer (Google Pay &amp; Banking Framework)</span>
                 </div>
-                <p class="text-[11px] text-slate-200 leading-relaxed">
-                    Your UPI PIN input screen has been withheld. The API Gateway aborted this session because high-risk remote fraud signals were identified.
+                <p class="text-[11px] text-slate-200 leading-relaxed font-sans">
+                    <strong>For your safety, UPI PIN entry is disabled.</strong> An external app (e.g. AnyDesk, TeamViewer, Zoom) is mirroring your screen, or you are currently on an active phone call.
                 </p>
+                <div class="p-2 rounded-lg bg-black/40 border border-rose-500/20 text-rose-200 text-[10.5px]">
+                    To proceed safely: <strong>1. Stop sharing your screen. 2. Disconnect the call. 3. Re-open your payment app.</strong>
+                </div>
             </div>
 
             <!-- Critical Threat Diagnostics -->
