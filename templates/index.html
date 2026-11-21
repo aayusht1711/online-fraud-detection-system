@@ -1592,6 +1592,30 @@
                             <span class="text-[9px] font-mono text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Pre-PIN Active</span>
                         </div>
 
+                        <!-- Real-Life Screen Share Detector Banner (Native WebRTC / MediaCapture API) -->
+                        <div id="realScreenShareBanner" class="p-3 rounded-2xl bg-gradient-to-r from-purple-950/60 via-slate-900/90 to-indigo-950/60 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300 flex-shrink-0 shadow-inner">
+                                    <i class="fa-solid fa-display text-sm" id="realSensorIcon"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-white tracking-wide">Real-Life Screen Share Detector</span>
+                                        <span id="realSensorBadge" class="text-[9px] px-2 py-0.5 rounded-full font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">SENSOR READY</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-300 mt-0.5" id="realSensorDesc">
+                                        Click below to share your screen/window live. Aegis hooks the media track and automatically blocks payments!
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto flex-shrink-0">
+                                <button type="button" id="btnStartRealScreenShare" onclick="toggleRealScreenShareDetection()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-purple-600/30 transition cursor-pointer active:scale-95">
+                                    <i class="fa-solid fa-video text-xs" id="btnRealIcon"></i>
+                                    <span id="btnRealScreenShareText">Share Screen to Test</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- 4 Contextual Toggles Grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                             <!-- Signal 1: Active Call Detection -->
@@ -2887,6 +2911,111 @@
         }
 
         // =====================================================================
+        // REAL-LIFE HARDWARE SCREEN SHARING DETECTION SENSOR (MediaCapture API)
+        // =====================================================================
+        let realScreenStream = null;
+
+        async function toggleRealScreenShareDetection() {
+            if (realScreenStream) {
+                stopRealScreenShareDetection();
+            } else {
+                await startRealScreenShareDetection();
+            }
+        }
+
+        async function startRealScreenShareDetection() {
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                    alert("Your browser does not support the Screen Capture API (navigator.mediaDevices.getDisplayMedia). Please use Google Chrome, Microsoft Edge, or Mozilla Firefox.");
+                    return;
+                }
+
+                appendLogTerminal('SENSOR: Requesting native display capture stream from browser...');
+
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: "always" },
+                    audio: false
+                });
+
+                realScreenStream = stream;
+                const videoTrack = stream.getVideoTracks()[0];
+
+                // Automatically engage screen sharing flag
+                upiContext.screenSharing = true;
+                updateUpiContextButtons();
+
+                const badge = document.getElementById('realSensorBadge');
+                const desc = document.getElementById('realSensorDesc');
+                const btnText = document.getElementById('btnRealScreenShareText');
+                const btn = document.getElementById('btnStartRealScreenShare');
+                const icon = document.getElementById('realSensorIcon');
+
+                if (badge) {
+                    badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
+                    badge.innerText = '🔴 SCREEN SHARING ACTIVE';
+                }
+                if (desc) {
+                    desc.innerHTML = `<span class="text-rose-400 font-semibold">Active Track:</span> ${videoTrack.label || 'Screen Stream'} &bull; Threat hook locked`;
+                }
+                if (btnText) btnText.innerText = 'Stop Screen Share';
+                if (btn) btn.className = 'w-full sm:w-auto px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-rose-600/30 transition cursor-pointer active:scale-95';
+                if (icon) icon.className = 'fa-solid fa-broadcast-tower text-sm text-rose-400 animate-pulse';
+
+                appendLogTerminal(`🚨 REAL-LIFE SENSOR TRIGGERED: Live display capture active [Track: ${videoTrack.label}]. Pre-PIN security gate locked!`);
+
+                // Re-evaluate risk immediately
+                await evaluateUpiRiskLive();
+
+                // Listen for when user stops sharing via browser native floating bar ("Stop sharing")
+                videoTrack.onended = () => {
+                    handleRealScreenShareEnded();
+                };
+
+            } catch (err) {
+                if (err.name === 'NotAllowedError') {
+                    appendLogTerminal('SENSOR INFO: Screen share prompt was dismissed by user.');
+                } else {
+                    console.error("Screen capture error:", err);
+                    appendLogTerminal(`SENSOR ERROR: ${err.message}`);
+                }
+            }
+        }
+
+        function stopRealScreenShareDetection() {
+            if (realScreenStream) {
+                realScreenStream.getTracks().forEach(track => track.stop());
+                realScreenStream = null;
+            }
+            handleRealScreenShareEnded();
+        }
+
+        function handleRealScreenShareEnded() {
+            realScreenStream = null;
+            upiContext.screenSharing = false;
+            updateUpiContextButtons();
+
+            const badge = document.getElementById('realSensorBadge');
+            const desc = document.getElementById('realSensorDesc');
+            const btnText = document.getElementById('btnRealScreenShareText');
+            const btn = document.getElementById('btnStartRealScreenShare');
+            const icon = document.getElementById('realSensorIcon');
+
+            if (badge) {
+                badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                badge.innerText = 'SENSOR READY';
+            }
+            if (desc) {
+                desc.innerText = 'Click below to share your screen/window live. Aegis hooks the media track and automatically blocks payments!';
+            }
+            if (btnText) btnText.innerText = 'Share Screen to Test';
+            if (btn) btn.className = 'w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-purple-600/30 transition cursor-pointer active:scale-95';
+            if (icon) icon.className = 'fa-solid fa-display text-sm text-purple-300';
+
+            appendLogTerminal('INFO: Real screen sharing stream stopped. Display returned to secure mode.');
+            evaluateUpiRiskLive();
+        }
+
+        // =====================================================================
         // INTEGRATED UPI REAL-TIME CONTEXTUAL DEFENSE & PRE-PIN SHIELD
         // =====================================================================
         const upiContext = {
@@ -2942,8 +3071,8 @@
                 if (upiContext.screenSharing) {
                     btnMirror.className = 'p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-rose-950/40 border-rose-500/50 text-rose-200 shadow-md shadow-rose-950/50';
                     badgeMirror.className = 'text-[9px] px-1.5 py-0.5 rounded font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
-                    badgeMirror.innerText = 'MIRRORING ACTIVE';
-                    subMirror.innerText = 'MediaProjection / AnyDesk Hook';
+                    badgeMirror.innerText = realScreenStream ? 'LIVE SCREEN STREAM' : 'MIRRORING ACTIVE';
+                    subMirror.innerText = realScreenStream ? 'Hardware Track Hook Active' : 'MediaProjection / AnyDesk Hook';
                     iconMirror.className = 'fa-solid fa-display text-rose-400';
                 } else {
                     btnMirror.className = 'p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500';
@@ -3438,12 +3567,16 @@
         }
 
         function terminateScreenShareAndAbort() {
-            upiContext.screenSharing = false;
-            updateUpiContextButtons();
+            if (realScreenStream) {
+                stopRealScreenShareDetection();
+            } else {
+                upiContext.screenSharing = false;
+                updateUpiContextButtons();
+                evaluateUpiRiskLive();
+            }
             closeUpiGatewayBlockModal();
-            evaluateUpiRiskLive();
             appendLogTerminal('DEFENSE ACTION: External Screen Sharing Revoked. System display returned to secure mode.');
-            alert("Screen Sharing Access Terminated! AnyDesk / TeamViewer display projection has been revoked. Your session is now secure.");
+            alert("Screen Sharing Access Terminated! Display projection has been revoked. Your session is now secure.");
         }
 
         function callCyberHelpline() {
