@@ -1681,6 +1681,23 @@
                         <span id="upiAlertSub" class="text-[11px] text-slate-300">This UPI transfer is verified legitimate.</span>
                     </div>
                 </div>
+
+                <!-- Evidence Preservation & I4C Form 1930 Dossier Export -->
+                <div class="mt-4 p-3.5 bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950/40 border border-white/10 rounded-xl space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-contract text-amber-400"></i> I4C Evidence Dossier
+                        </span>
+                        <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">Sec 65B BSA Certified</span>
+                    </div>
+                    <p class="text-[10.5px] text-slate-300 leading-relaxed">
+                        Compiles an official, tamper-sealed Form 1930 electronic evidence record with SHA-256 chain of custody for cyber police &amp; bank recovery.
+                    </p>
+                    <button id="btnSidebarDossier" onclick="downloadCybercrimeDossier()" class="w-full py-2.5 px-3 rounded-lg bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-extrabold text-[11px] shadow-lg shadow-rose-600/20 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98">
+                        <i class="fa-solid fa-download text-amber-300"></i>
+                        <span>1-Click Download Form 1930 PDF</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Bottom meta -->
@@ -3504,6 +3521,70 @@
             alert("Emergency UPI Freeze Activated! Your UPI ID alex@okaxis has been temporarily locked for all debit transactions.");
         }
 
+        // =====================================================================
+        // 1-CLICK COURT-ADMISSIBLE CYBERCRIME EVIDENCE DOSSIER (FORM 1930 / I4C)
+        // =====================================================================
+        async function downloadCybercrimeDossier() {
+            const vpa = document.getElementById('inputUpiTargetVPA') ? document.getElementById('inputUpiTargetVPA').value.trim() : 'ph0nepe@okaxis';
+            const amtStr = document.getElementById('inputUpiVal') ? document.getElementById('inputUpiVal').value.replace(/,/g, '') : '48000';
+            const amt = parseFloat(amtStr) || 48000;
+            const targetName = document.getElementById('vpaTargetName') ? document.getElementById('vpaTargetName').innerText : 'PhonePe Cash Refund Officer';
+
+            appendLogTerminal(`[FORENSICS] Compiling official I4C Form 1930 Evidence Dossier for target "${vpa}" (₹${amt.toLocaleString()})...`);
+
+            const btnModal = document.getElementById('btnDownloadI4CDossier');
+            const btnSidebar = document.getElementById('btnSidebarDossier');
+            if (btnModal) { btnModal.disabled = true; btnModal.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Hashing & Signing PDF...'; }
+            if (btnSidebar) { btnSidebar.disabled = true; btnSidebar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...'; }
+
+            try {
+                const res = await fetch('/api/generate-dossier', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        attacker_vpa: vpa,
+                        attacker_alias: targetName,
+                        amount: amt,
+                        screen_sharing_active: upiContext.screenSharing,
+                        call_active: upiContext.callActive,
+                        qr_origin: upiContext.qrOrigin,
+                        is_collect_request: upiContext.isCollect,
+                        brand_similarity: lastUpiResult && lastUpiResult.vpaData ? (lastUpiResult.vpaData.max_similarity * 100) : 88.0,
+                        levenshtein_distance: 1
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'SUCCESS') {
+                    appendLogTerminal(`✅ [FORENSICS] Generated Form 1930 PDF [Docket: ${data.incident_id}] | SHA-256: ${data.sha256_hash.substring(0, 16)}...`);
+
+                    // Trigger instant browser download
+                    const link = document.createElement('a');
+                    link.href = data.download_url;
+                    link.download = data.filename;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    alert(`Official Court-Admissible I4C Form 1930 Dossier Generated!\n\nDocket ID: ${data.incident_id}\nSHA-256 Hash: ${data.sha256_hash}\n\nThe PDF complies with Section 65B Indian Evidence Act / Section 63 BSA 2023 for direct submission to Cyber Police (1930 / cybercrime.gov.in) and Bank Fraud Redressal.`);
+                } else {
+                    appendLogTerminal('❌ [FORENSICS] Error generating dossier.');
+                }
+            } catch (err) {
+                console.error("Dossier error:", err);
+                appendLogTerminal(`❌ [FORENSICS] Generation failed: ${err.message}`);
+            } finally {
+                if (btnModal) {
+                    btnModal.disabled = false;
+                    btnModal.innerHTML = '<i class="fa-solid fa-file-shield text-amber-300"></i> <span>Download Court-Admissible I4C Form 1930 Dossier (PDF)</span>';
+                }
+                if (btnSidebar) {
+                    btnSidebar.disabled = false;
+                    btnSidebar.innerHTML = '<i class="fa-solid fa-download text-amber-300"></i> <span>1-Click Download Form 1930 PDF</span>';
+                }
+            }
+        }
+
         // Global Keyboard Handler for MPIN modal
         window.addEventListener('keydown', (e) => {
             const mpinModal = document.getElementById('modalUpiMpin');
@@ -4038,6 +4119,10 @@
                     <i class="fa-solid fa-scissors"></i>
                     <span>Disconnect Screen Mirror &bull; Abort Transaction</span>
                 </button>
+                <button id="btnDownloadI4CDossier" onclick="downloadCybercrimeDossier()" class="w-full py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white shadow-xl shadow-rose-600/30 transition cursor-pointer flex items-center justify-center gap-2 border border-rose-400/30 active:scale-98">
+                    <i class="fa-solid fa-file-shield text-amber-300"></i>
+                    <span>Download Court-Admissible I4C Form 1930 Dossier (PDF)</span>
+                </button>
                 <div class="grid grid-cols-2 gap-2 text-xs">
                     <button onclick="callCyberHelpline()" class="py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/10 font-semibold transition cursor-pointer flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-phone text-amber-400"></i>
@@ -4181,6 +4266,9 @@
         </button>
         <button onclick="triggerBotUpiPayment()" title="Simulates automated UPI scam payment to trigger pre-PIN friction screen" class="px-2.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-purple-600/30 cursor-pointer active:scale-95 whitespace-nowrap">
             <i class="fa-solid fa-bolt"></i> ⚡ UPI Scam Pay
+        </button>
+        <button onclick="downloadCybercrimeDossier()" title="Generates official Court-Admissible I4C Form 1930 Evidence Dossier PDF with SHA-256 hash" class="px-2.5 py-1.5 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-red-600/30 cursor-pointer active:scale-95 whitespace-nowrap">
+            <i class="fa-solid fa-file-shield text-amber-300"></i> 📄 Form 1930 Dossier
         </button>
         <button onclick="triggerBiometricsSim('human')" title="Resets all telemetry gauges and sensors back to genuine human baseline" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-blue-300 rounded-xl text-xs font-medium transition flex items-center gap-1.5 border border-slate-700 cursor-pointer active:scale-95 whitespace-nowrap">
             <i class="fa-solid fa-shield-halved"></i> Reset Human

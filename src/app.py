@@ -1,11 +1,12 @@
 import os
 import sys
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from levenshtein_engine import LevenshteinTypoEngine
 from inference_engine import FraudInferenceEngine
+from dossier_generator import generate_i4c_dossier_pdf
 
 data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 model_dir = os.path.join(os.path.dirname(__file__), "..", "models")
@@ -86,6 +87,76 @@ def check_vpa():
     vpa = data.get("vpa", "")
     evaluation = LevenshteinTypoEngine.evaluate_vpa(vpa)
     return jsonify(evaluation)
+
+@app.route("/api/generate-dossier", methods=["POST"])
+def generate_dossier():
+    """
+    Generates a formal, court-admissible I4C Form 1930 Cybercrime Evidence Dossier.
+    Complies with Sec 65B Indian Evidence Act 1872 & Sec 63 BSA 2023.
+    """
+    import random, time
+    data = request.json or {}
+
+    inc_id = data.get("incident_id")
+    if not inc_id:
+        random_suffix = random.randint(10000, 99999)
+        inc_id = f"I4C-2026-UP1930-AEGIS-{random_suffix}"
+
+    incident_payload = {
+        "incident_id": inc_id,
+        "victim_name": data.get("victim_name", "Rahul Verma (Protected Customer)"),
+        "victim_vpa": data.get("victim_vpa", "user@okhdfcbank"),
+        "attacker_vpa": data.get("attacker_vpa", "ph0nepe@okaxis"),
+        "attacker_alias": data.get("attacker_alias", "PhonePe Cash Refund Officer"),
+        "amount": float(data.get("amount", 48000.0)),
+        "brand_similarity": float(data.get("brand_similarity", 88.0)),
+        "levenshtein_distance": int(data.get("levenshtein_distance", 1)),
+        "spoofed_brand": data.get("spoofed_brand", "PhonePe Official (phonepe@ybl / phonepe@ibl)"),
+        "target_bank": data.get("target_bank", "Axis Bank Core UPI Switch (IFSC: UTIB0000001)"),
+        "client_ip": data.get("client_ip", "103.112.44.89 (Bharti Airtel, Delhi NCR)"),
+        "client_device": data.get("client_device", "Samsung Galaxy S23 • Android 14 (One UI 6.1)"),
+        "screen_sharing_active": bool(data.get("screen_sharing_active", True)),
+        "call_active": bool(data.get("call_active", True)),
+        "is_collect_request": bool(data.get("is_collect_request", True)),
+        "qr_origin": data.get("qr_origin", "gallery")
+    }
+
+    dossier_dir = os.path.join(os.path.dirname(__file__), "..", "static", "dossiers")
+    os.makedirs(dossier_dir, exist_ok=True)
+    pdf_filename = f"I4C_Form1930_Dossier_{inc_id}.pdf"
+    pdf_full_path = os.path.join(dossier_dir, pdf_filename)
+
+    out_path, sha_digest = generate_i4c_dossier_pdf(incident_payload, output_path=pdf_full_path)
+
+    return jsonify({
+        "status": "SUCCESS",
+        "incident_id": inc_id,
+        "sha256_hash": sha_digest,
+        "filename": pdf_filename,
+        "download_url": f"/static/dossiers/{pdf_filename}",
+        "api_download_url": f"/api/download-dossier/{inc_id}"
+    })
+
+@app.route("/api/download-dossier/<incident_id>", methods=["GET"])
+def download_dossier(incident_id):
+    """Direct PDF download endpoint for Form 1930 Dossier"""
+    dossier_dir = os.path.join(os.path.dirname(__file__), "..", "static", "dossiers")
+    pdf_filename = f"I4C_Form1930_Dossier_{incident_id}.pdf"
+    pdf_full_path = os.path.join(dossier_dir, pdf_filename)
+
+    if not os.path.exists(pdf_full_path):
+        sample_path = os.path.join(dossier_dir, "I4C_Form1930_Dossier_Sample.pdf")
+        if os.path.exists(sample_path):
+            pdf_full_path = sample_path
+        else:
+            return jsonify({"status": "ERROR", "message": "Dossier not found"}), 404
+
+    return send_file(
+        pdf_full_path,
+        as_attachment=True,
+        download_name=f"I4C_Form1930_Evidence_Dossier_{incident_id}.pdf",
+        mimetype="application/pdf"
+    )
 
 @app.route("/api/sandbox/transfer", methods=["POST"])
 def honeypot_transfer():

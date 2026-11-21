@@ -30,5 +30,7 @@ cert.pem
 key.pem
 cloudflared.exe
 static/*.apk
+static/dossiers/I4C_Form1930_Dossier_I4C-*.pdf
+static/dossiers/test_sample_dossier.pdf
 
 
