@@ -24,3 +24,9 @@ desktop.ini
 # IDE local state
 .idea/
 .vscode/.ropeproject
+
+# Local Certificates and Tunnel binaries
+cert.pem
+key.pem
+cloudflared.exe
+

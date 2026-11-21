@@ -1,5 +1,5 @@
 @echo off
-title Project Aegis - SafeSight AI Security Server
+title Project Aegis - AI Security Server
 cd /d "%~dp0"
 
 echo ========================================================

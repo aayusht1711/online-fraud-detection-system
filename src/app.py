@@ -296,5 +296,5 @@ def test_bot_sample():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    print(f"Starting SafeSight Fraud Prevention Server on http://127.0.0.1:{port}")
+    print(f"Starting Project Aegis Fraud Prevention Server on http://127.0.0.1:{port}")
     app.run(host="0.0.0.0", port=port, debug=False)

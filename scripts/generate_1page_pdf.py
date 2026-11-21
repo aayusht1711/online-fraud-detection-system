@@ -174,7 +174,7 @@ def build_1page_pdf(output_paths):
         ],
         [
             Paragraph("A Unified ML-Driven Fraud Detection and Deceptive Honeypot Defence Platform for UPI Payments", style_hdr_sub),
-            Paragraph("UPES Major Project &bull; Team SafeSight", ParagraphStyle('SubSub', fontName='Helvetica', fontSize=6.5, leading=8, textColor=colors.HexColor("#CBD5E1"), alignment=2))
+            Paragraph("Online Fraud Detection System &bull; Project Aegis", ParagraphStyle('SubSub', fontName='Helvetica', fontSize=6.5, leading=8, textColor=colors.HexColor("#CBD5E1"), alignment=2))
         ]
     ]
     t_header = Table(header_data, colWidths=[usable_width * 0.72, usable_width * 0.28])

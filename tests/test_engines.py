@@ -8,7 +8,7 @@ from levenshtein_engine import LevenshteinTypoEngine
 from inference_engine import FraudInferenceEngine
 from app import app
 
-class TestSafeSightEngines(unittest.TestCase):
+class TestAegisEngines(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
