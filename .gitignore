@@ -29,4 +29,6 @@ desktop.ini
 cert.pem
 key.pem
 cloudflared.exe
+static/*.apk
+
 
