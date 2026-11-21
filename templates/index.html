@@ -3419,6 +3419,19 @@
                 return;
             }
 
+            // ZERO TOLERANCE SECURITY GATE: If screen sharing is active, reject payment immediately
+            if (upiContext.screenSharing || (lastUpiResult && lastUpiResult.intervention_type === 'GATEWAY_REJECTION')) {
+                closeUpiMpinModal();
+                showUpiGatewayBlockModal(
+                    lastUpiResult ? lastUpiResult.vpa : 'unknown@okaxis',
+                    lastUpiResult ? lastUpiResult.targetName : 'Target Payee',
+                    lastUpiResult ? lastUpiResult.amt : 2499,
+                    lastUpiResult
+                );
+                appendLogTerminal('CRITICAL SECURITY INTERCEPTION: Payment settlement rejected! Screen sharing coercion detected.');
+                return;
+            }
+
             const loader = document.getElementById('mpinProcessingLoader');
             const submitBtn = document.getElementById('btnSubmitMpin');
             if (loader) loader.classList.remove('hidden');
