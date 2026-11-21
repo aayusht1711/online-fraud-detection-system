@@ -3050,14 +3050,14 @@
                 upiContext.isCollect = false;
                 appendLogTerminal('SIMULATION: Loaded Profile 1 - Clean Retail Store (Zero Friction expected).');
             } else if (profile === 'friction') {
-                document.getElementById('inputUpiTargetVPA').value = 'elect-bill-pay@okaxis';
+                document.getElementById('inputUpiTargetVPA').value = 'elec.174@okaxis';
                 document.getElementById('inputUpiVal').value = '4,800';
                 document.getElementById('vpaTargetName').innerText = 'State Discom Electricity Cell';
                 upiContext.callActive = true;
                 upiContext.screenSharing = false;
                 upiContext.qrOrigin = 'gallery';
                 upiContext.isCollect = false;
-                appendLogTerminal('SIMULATION: Loaded Profile 2 - Utility Phishing via Gallery QR + Active Call (Dynamic Friction expected).');
+                appendLogTerminal('SIMULATION: Loaded Profile 2 - Fake Utility Phishing [elec.174 vs BBPS elec.173] + Active Call (Dynamic Friction expected).');
             } else if (profile === 'coercion') {
                 document.getElementById('inputUpiTargetVPA').value = 'ph0nepe@okaxis';
                 document.getElementById('inputUpiVal').value = '48,000';
@@ -3100,22 +3100,27 @@
                 });
                 const vpaData = await resVpa.json();
 
-                if (vpaData.is_typo_squatting) {
-                    badge.innerText = `Levenshtein Alert (Sim: ${(vpaData.max_similarity * 100).toFixed(0)}%)`;
-                    badge.className = 'text-[9px] font-mono font-medium px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30';
-                    icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-rose-400 text-sm';
-                    icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-                    if (nameTarget && !nameTarget.innerText.includes('PhonePe') && !nameTarget.innerText.includes('Electricity')) {
-                        nameTarget.innerText = `SUSPICIOUS (Impersonating ${vpaData.best_match})`;
-                    }
-                } else {
-                    badge.innerText = 'Levenshtein: Safe';
+                if (vpaData.is_bbps_verified) {
+                    badge.innerText = `BBPS Verified (${vpaData.mcc ? vpaData.mcc.split(' ')[0] : '4900'})`;
                     badge.className = 'text-[9px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
                     icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-emerald-400 text-sm';
                     icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-                    if (nameTarget && vpa === 'rahulgear@okaxis') {
-                        nameTarget.innerText = 'Rahul Gear Stores';
+                    if (nameTarget && vpaData.entity_name) {
+                        nameTarget.innerText = vpaData.entity_name;
                     }
+                } else if (vpaData.is_typo_squatting) {
+                    badge.innerText = `NOT in BBPS (${(vpaData.max_similarity * 100).toFixed(0)}% match to ${vpaData.best_match})`;
+                    badge.className = 'text-[9px] font-mono font-medium px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                    icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-rose-400 text-sm';
+                    icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                    if (nameTarget) {
+                        nameTarget.innerText = `FAKE ACCOUNT (Impersonating ${vpaData.impersonated_entity || vpaData.best_match})`;
+                    }
+                } else {
+                    badge.innerText = 'Unverified P2P Handle';
+                    badge.className = 'text-[9px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600';
+                    icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 text-sm';
+                    icon.innerHTML = '<i class="fa-solid fa-user"></i>';
                 }
 
                 // 2. Score Unified Risk with Contextual Signals
@@ -3163,14 +3168,18 @@
                 // SOC Checklist
                 const chk1 = document.getElementById('chkUpi1');
                 const sub1 = document.getElementById('subTextUpi1');
-                if (vpaData.is_typo_squatting) {
-                    chk1.innerText = `ALERT (${(vpaData.max_similarity * 100).toFixed(0)}%)`;
-                    chk1.className = 'text-rose-300 text-[10px] font-medium px-2 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30';
-                    sub1.innerText = `Impersonating ${vpaData.best_match} (Distance: ${vpaData.min_distance})`;
-                } else {
-                    chk1.innerText = 'Safe';
+                if (vpaData.is_bbps_verified) {
+                    chk1.innerText = 'BBPS Verified';
                     chk1.className = 'text-emerald-300 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30';
-                    sub1.innerText = 'Verified NPCI whitelist format';
+                    sub1.innerText = `${vpaData.entity_name} (${vpaData.mcc ? vpaData.mcc.split(' ')[0] : '4900'})`;
+                } else if (vpaData.is_typo_squatting) {
+                    chk1.innerText = `NOT In BBPS (${(vpaData.max_similarity * 100).toFixed(0)}%)`;
+                    chk1.className = 'text-rose-300 text-[10px] font-medium px-2 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30';
+                    sub1.innerText = `Impersonating ${vpaData.best_match} (${vpaData.account_type || 'P2P'})`;
+                } else {
+                    chk1.innerText = 'Standard P2P';
+                    chk1.className = 'text-slate-300 text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700';
+                    sub1.innerText = 'Unverified P2P savings account (MCC 0000)';
                 }
 
                 const chk2 = document.getElementById('chkUpi2');
