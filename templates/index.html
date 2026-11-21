@@ -1578,7 +1578,7 @@
                 </div>
 
                 <!-- 4. PRIMARY DESKTOP CHECKOUT ACTION BUTTON -->
-                <button onclick="payUPIAction()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold py-3.5 rounded-xl text-sm shadow-xl shadow-emerald-500/25 transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+                <button id="btnPayUPIPrimary" onclick="payUPIAction()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold py-3.5 rounded-xl text-sm shadow-xl shadow-emerald-500/25 transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-lock"></i>
                     <span>Authorize &amp; Send UPI Payment</span>
                 </button>
@@ -3735,13 +3735,33 @@
             }
         };
 
-        // Automated UPI Scam Payment Workflow
+        // Automated UPI Scam Payment Workflow (Full Autonomous Attack Sequence)
         window.triggerBotUpiPayment = function() {
             if (typeof switchTab === 'function') switchTab('upi');
-            if (typeof setUpiProfile === 'function') setUpiProfile('coercion');
 
+            // 1. Synthetic bot biometrics injection
+            if (!window.aegisSensor && typeof AegisBiometricsSensor === 'function') {
+                try { window.aegisSensor = new AegisBiometricsSensor(); } catch(e){}
+            }
+            if (window.aegisSensor) window.aegisSensor.simulateBotAttack();
+
+            // 2. Load AnyDesk / Phone Coercion Threat Profile (Profile 3)
+            if (typeof loadUpiThreatProfile === 'function') {
+                loadUpiThreatProfile('coercion');
+            } else {
+                upiContext.callActive = true;
+                upiContext.screenSharing = true;
+                upiContext.qrOrigin = 'gallery';
+                upiContext.isCollect = true;
+                if (typeof updateUpiContextButtons === 'function') updateUpiContextButtons();
+            }
+
+            // 3. Populate UPI Input Fields & Display Targets
             const vpaInput = document.getElementById('inputUpiTargetVPA');
             const amtInput = document.getElementById('inputUpiVal');
+            const amtDisp = document.getElementById('upiDisplayAmount');
+            const nameTarget = document.getElementById('vpaTargetName');
+
             if (vpaInput) {
                 vpaInput.value = 'ph0nepe@okaxis';
                 vpaInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -3751,15 +3771,35 @@
                 amtInput.value = '48,000';
                 amtInput.dispatchEvent(new Event('input', { bubbles: true }));
             }
+            if (amtDisp) amtDisp.innerText = '48,000.00';
+            if (nameTarget) nameTarget.innerText = 'PhonePe Cash Refund Officer';
 
-            setTimeout(() => {
-                const btnPay = document.getElementById('btnInitUpiPay');
-                if (btnPay) {
-                    btnPay.click();
-                } else if (typeof initiateUpiPaymentFlow === 'function') {
-                    initiateUpiPaymentFlow();
-                }
-            }, 500);
+            if (typeof appendLogTerminal === 'function') {
+                appendLogTerminal('🚨 BOT FULL ATTACK: Autonomous script injecting coercion attack payload [ph0nepe@okaxis, ₹48,000, AnyDesk + Voice Call]...');
+            }
+
+            // 4. Live Risk Evaluation & Automated Payment Execution
+            if (typeof evaluateUpiRiskLive === 'function') {
+                evaluateUpiRiskLive().then(() => {
+                    setTimeout(() => {
+                        if (typeof appendLogTerminal === 'function') {
+                            appendLogTerminal('BOT ATTACK: Script attempting automated UPI payment clearance at Gateway...');
+                        }
+                        const payBtn = document.getElementById('btnPayUPIPrimary');
+                        if (payBtn) {
+                            payBtn.classList.add('ring-4', 'ring-rose-500/60', 'scale-95');
+                            setTimeout(() => payBtn.classList.remove('ring-4', 'ring-rose-500/60', 'scale-95'), 350);
+                        }
+                        if (typeof payUPIAction === 'function') {
+                            payUPIAction();
+                        }
+                    }, 400);
+                });
+            } else {
+                setTimeout(() => {
+                    if (typeof payUPIAction === 'function') payUPIAction();
+                }, 400);
+            }
         };
 
     </script>
