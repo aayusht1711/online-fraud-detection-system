@@ -59,11 +59,6 @@ def aegis_demo():
     """Project Aegis Split-Screen Dual-View Demonstration Sandbox"""
     return render_template("aegis_demo.html")
 
-@app.route("/3d")
-@app.route("/architecture-3d")
-def aegis_3d_architecture():
-    """Interactive 3D Isometric Animated Architecture Diagram"""
-    return render_template("aegis_3d_architecture.html")
 
 @app.route("/sandbox/session")
 def honeypot_session():

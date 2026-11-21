@@ -71,9 +71,6 @@ Unlike conventional anti-fraud systems that analyze transactions *post-authoriza
 * Uses WebRTC STUN discovery to unmask adversary real IPs behind commercial VPNs and rotating proxies.
 * Implements a cryptographic Proof-of-Work (PoW) tarpit that stalls mule transfers and collapses scraper velocity by up to 98.7%.
 
-### 5. Interactive 3D Architecture Visualizer (`/3d`)
-* High-performance Three.js 3D visual graph mapping telemetry ingress, inference pipelines, and enforcement switches in real-time.
-
 ---
 
 ## 📊 Machine Learning Models & Empirical Benchmarks
@@ -118,7 +115,6 @@ online-fraud-detection-system/
 ├── templates/
 │   ├── index.html                           # Primary NeuroBank & UPI Security Dashboard
 │   ├── aegis_demo.html                      # Standalone presentation demo
-│   ├── aegis_3d_architecture.html           # Three.js 3D architectural visualizer
 │   └── honeypot.html                        # Deceptive Ghost banking session
 ├── tests/
 │   └── test_engines.py                      # Automated unit test suite
@@ -158,7 +154,6 @@ python src/app.py
 Open your browser and navigate to:
 * **UPI Security Dashboard:** [http://127.0.0.1:5000/upi](http://127.0.0.1:5000/upi)
 * **Main Dashboard:** [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
-* **3D Architecture Graph:** [http://127.0.0.1:5000/3d](http://127.0.0.1:5000/3d)
 * **Honeypot Sandbox:** [http://127.0.0.1:5000/sandbox/session](http://127.0.0.1:5000/sandbox/session)
 
 ### 4. Retrain Models
