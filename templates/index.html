@@ -1370,362 +1370,230 @@
     <!-- ========================================================================= -->
     <div id="viewUPI" class="hidden flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10" style="background: radial-gradient(circle at 20% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%), radial-gradient(circle at 80% 25%, rgba(139, 92, 246, 0.12) 0%, transparent 50%), #090a0f;">
 
-        <!-- LEFT COLUMN: COINBASE STYLE UPI TERMINAL & 3D VISUAL SHOWCASE -->
-        <div class="lg:col-span-7 coinbase-glass-card rounded-3xl p-6 md:p-7 flex flex-col justify-between shadow-2xl relative overflow-hidden space-y-6 text-white border border-emerald-500/20">
+        <!-- LEFT COLUMN: AUTHENTIC DESKTOP UPI CHECKOUT GATEWAY -->
+        <div class="lg:col-span-7 coinbase-glass-card rounded-3xl p-6 md:p-7 flex flex-col justify-between shadow-2xl relative overflow-hidden space-y-5 text-white border border-emerald-500/20">
 
-            <!-- Subtle background glow orbs -->
-            <div class="absolute -top-20 -left-20 w-80 h-80 bg-emerald-500/10 pointer-events-none rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-purple-500/10 pointer-events-none rounded-full blur-3xl"></div>
+            <!-- Background subtle ambient glow -->
+            <div class="absolute -top-24 -left-24 w-80 h-80 bg-emerald-500/10 pointer-events-none rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-purple-500/10 pointer-events-none rounded-full blur-3xl"></div>
 
-            <div class="relative z-10 space-y-5">
-                <!-- 1. TOP BRAND & NAVIGATION BAR (DIRECT MATCH TO REFERENCE IMAGE) -->
-                <div class="flex justify-between items-center pb-4 border-b border-white/10">
-                    <div class="flex items-center gap-3">
-                        <!-- Stylized 3D Logo matching Coinbase reference -->
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 flex items-center justify-center font-black text-sm shadow-lg shadow-emerald-500/25">
-                            &#9670;
+            <div class="relative z-10 space-y-4">
+                <!-- 1. AUTHENTIC DESKTOP MERCHANT CHECKOUT HEADER -->
+                <div class="p-4 bg-[#070b14] border border-white/10 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-lg">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 font-black text-lg flex items-center justify-center shadow-lg shadow-emerald-500/25 flex-shrink-0">
+                            RG
                         </div>
                         <div>
-                            <span class="font-extrabold text-base text-white tracking-tight font-sans block leading-none">AEGIS &bull; UPI 2.0</span>
-                            <span class="text-[9px] text-emerald-400 font-mono">Pre-flight VPA Defense &bull; NPCI Synced</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-base text-white tracking-tight" id="vpaTargetName">Rahul Gear Stores</span>
+                                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check text-emerald-400"></i> Verified Merchant
+                                </span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-mono">Order #ORD-89412 &bull; Merchant P2M Gateway</span>
                         </div>
                     </div>
-
-                    <!-- Right Balance Callout & Live Status -->
-                    <div class="flex items-center gap-3">
-                        <div class="text-right hidden sm:block">
-                            <span class="text-[9px] text-slate-400 uppercase tracking-widest block font-semibold">AVAILABLE BALANCE</span>
-                            <span class="text-base font-bold text-white font-mono">&#8377; 48,250.00</span>
+                    <div class="sm:text-right">
+                        <span class="text-[9px] text-slate-400 uppercase tracking-widest block font-semibold">TOTAL PAYABLE</span>
+                        <div class="text-xl font-extrabold text-white font-mono flex items-center sm:justify-end gap-1">
+                            <span class="text-emerald-400">₹</span>
+                            <span id="upiDisplayAmount">2,499.00</span>
                         </div>
-                        <span class="text-[10px] font-mono px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 font-medium">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            NPCI VPA Shield Active
-                        </span>
                     </div>
                 </div>
 
-                <!-- 2. HERO SECTION & 3D FLOATING LEVITATING CARDS (EXACT MATCH TO REFERENCE) -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center py-1">
-                    <!-- Left Hero Headline (Typographic Match to Reference) -->
-                    <div class="md:col-span-6 space-y-3.5">
-                        <h1 class="text-2xl md:text-3xl lg:text-[34px] font-extrabold text-white leading-tight tracking-tight">
-                            Let's make Payments<br>
-                            Go Better with<br>
-                            <span class="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-300 font-normal">UPI 2.0 Instant Pay</span>
-                        </h1>
-<!-- Action Buttons (White pill + Dark pill from reference) -->
-                        <div class="pt-1 flex items-center gap-3">
-                            <button onclick="document.getElementById('inputUpiTargetVPA').focus()" class="coinbase-pill-white text-xs px-5 py-2.5 rounded-full flex items-center gap-1.5 cursor-pointer active:scale-95">
-                                <span>Get Started</span>
-                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                <!-- 2. DESKTOP UPI CHECKOUT GRID: DYNAMIC BHARATQR + DIRECT VPA TRANSFER -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                    <!-- Left: Dynamic BharatQR Scanner Box (Authentic Desktop Checkout Experience) -->
+                    <div class="md:col-span-5 p-4 rounded-2xl bg-[#080d1a] border border-white/10 flex flex-col items-center justify-between text-center relative group">
+                        <div class="w-full flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-qrcode text-emerald-400"></i> Dynamic BharatQR
+                            </span>
+                            <span class="text-[9px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 animate-pulse">04:59</span>
+                        </div>
+
+                        <!-- Scannable Dynamic QR Code -->
+                        <div class="relative p-2 bg-white rounded-xl shadow-lg shadow-black/60 my-1 cursor-pointer">
+                            <img src="/static/upi_qr_shield.jpg" alt="UPI BharatQR Payment Code" class="w-32 h-32 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-emerald-500/10 rounded-xl pointer-events-none border border-emerald-500/30"></div>
+                        </div>
+
+                        <span class="text-[10px] text-slate-300 font-medium mt-1">Scan with GPay, PhonePe, Paytm</span>
+
+                        <!-- Instant QR Simulation triggers -->
+                        <div class="grid grid-cols-2 gap-1.5 w-full mt-2.5">
+                            <button type="button" onclick="fillVpa('rahulgear@okaxis'); document.getElementById('inputUpiVal').value='2,499'; document.getElementById('upiDisplayAmount').innerText='2,499.00';" class="py-1 px-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 text-[9px] font-medium transition cursor-pointer text-center">
+                                Clean QR
                             </button>
-                            <button onclick="document.getElementById('upiQrModalShowcase').classList.toggle('hidden')" class="coinbase-pill-dark text-xs px-4 py-2.5 rounded-full flex items-center gap-1.5 cursor-pointer active:scale-95">
-                                <i class="fa-solid fa-qrcode text-emerald-400 text-xs"></i>
-                                <span>Scan QR Code</span>
+                            <button type="button" onclick="fillVpa('ph0nepe@okaxis'); document.getElementById('inputUpiVal').value='48,000'; document.getElementById('upiDisplayAmount').innerText='48,000.00';" class="py-1 px-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-500/30 text-rose-300 text-[9px] font-medium transition cursor-pointer text-center">
+                                Phishing QR
                             </button>
                         </div>
                     </div>
 
-                    <!-- Right 3D Futuristic Chrome Hand Levitating UPI Cards Image (From Reference) -->
-                    <div class="md:col-span-6 flex justify-center items-center py-2 relative">
-                        <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer" onclick="document.getElementById('upiQrModalShowcase').classList.toggle('hidden')">
-                            <!-- High-resolution 3D Chrome Hand with Levitating Payment Cards -->
-                            <img src="/static/upi_3d_hand.jpg" alt="3D Futuristic Hand Levitating Payment Cards" class="w-full h-48 md:h-52 object-cover object-center group-hover:scale-105 transition duration-500">
-                            <!-- Overlay gradient banner -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex items-end p-3">
-                                <div class="flex justify-between items-center w-full">
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                                        <span class="text-[11px] font-bold text-white tracking-wide">3D Contactless UPI Mesh</span>
-                                    </div>
-                                    <span class="text-[9px] text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">Zero Latency</span>
-                                </div>
+                    <!-- Right: Direct UPI VPA & Amount Entry -->
+                    <div class="md:col-span-7 p-4 rounded-2xl bg-[#080d1a] border border-white/10 space-y-3 flex flex-col justify-between">
+                        <!-- Recipient VPA Input -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-[11px] font-semibold text-slate-300">Recipient UPI ID / VPA</label>
+                                <span id="vpaTypoBadge" class="text-[9px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Levenshtein: Safe</span>
+                            </div>
+                            <div class="relative">
+                                <input type="text" id="inputUpiTargetVPA" value="rahulgear@okaxis" oninput="checkVPAEngineLive()" class="w-full bg-[#050810] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white pr-9 font-mono font-medium focus:border-emerald-400 focus:outline-none transition">
+                                <span id="vpaIconStatus" class="absolute inset-y-0 right-0 pr-3 flex items-center text-emerald-400 text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                            </div>
+                            
+                            <!-- Preset VPA Chips -->
+                            <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                                <span class="text-[9px] text-slate-400">Presets:</span>
+                                <button type="button" onclick="fillVpa('rahulgear@okaxis'); document.getElementById('upiDisplayAmount').innerText=document.getElementById('inputUpiVal').value;" class="text-[9px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-emerald-300 border border-emerald-500/30 font-mono transition">rahulgear</button>
+                                <button type="button" onclick="fillVpa('elect-bill-pay@okaxis'); document.getElementById('upiDisplayAmount').innerText=document.getElementById('inputUpiVal').value;" class="text-[9px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 font-mono transition">elect-bill</button>
+                                <button type="button" onclick="fillVpa('ph0nepe@okaxis'); document.getElementById('upiDisplayAmount').innerText=document.getElementById('inputUpiVal').value;" class="text-[9px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-rose-300 border border-rose-500/30 font-mono transition">ph0nepe</button>
+                                <button type="button" onclick="fillVpa('paytm-support@sbi'); document.getElementById('upiDisplayAmount').innerText=document.getElementById('inputUpiVal').value;" class="text-[9px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-rose-300 border border-rose-500/30 font-mono transition">paytm-support</button>
                             </div>
                         </div>
+
+                        <!-- Amount Input with Quick Pills -->
+                        <div>
+                            <label class="text-[11px] font-semibold text-slate-300 mb-1 block">Amount (INR)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-emerald-400 font-bold text-sm">₹</span>
+                                <input type="text" id="inputUpiVal" value="2,499" oninput="document.getElementById('upiDisplayAmount').innerText = this.value;" class="w-full bg-[#050810] border border-slate-700/80 rounded-xl pl-7 pr-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-emerald-400 font-mono">
+                            </div>
+                            <div class="flex gap-1.5 mt-1.5">
+                                <button type="button" onclick="document.getElementById('inputUpiVal').value='500'; document.getElementById('upiDisplayAmount').innerText='500.00';" class="px-2 py-0.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-md text-[10px] font-mono border border-white/5 transition">₹500</button>
+                                <button type="button" onclick="document.getElementById('inputUpiVal').value='1,000'; document.getElementById('upiDisplayAmount').innerText='1,000.00';" class="px-2 py-0.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-md text-[10px] font-mono border border-white/5 transition">₹1k</button>
+                                <button type="button" onclick="document.getElementById('inputUpiVal').value='2,499'; document.getElementById('upiDisplayAmount').innerText='2,499.00';" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-md text-[10px] font-bold font-mono border border-emerald-500/30 transition">₹2.4k</button>
+                                <button type="button" onclick="document.getElementById('inputUpiVal').value='10,000'; document.getElementById('upiDisplayAmount').innerText='10,000.00';" class="px-2 py-0.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-md text-[10px] font-mono border border-white/5 transition">₹10k</button>
+                            </div>
+                        </div>
+
+                        <!-- Primary Debit Source Info -->
+                        <div class="p-2 bg-[#050810] border border-white/5 rounded-xl flex items-center justify-between text-[10px]">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-building-columns text-emerald-400"></i>
+                                <span class="text-slate-300 font-medium">Primary Account (Axis Bank &bull; XXXX 1234)</span>
+                            </div>
+                            <span class="text-emerald-400 font-mono">Bal: ₹ 48,250</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 3. HOLOGRAPHIC QR SCANNER POPUP / SHOWCASE (INTERACTIVE) -->
-                <div id="upiQrModalShowcase" class="hidden rounded-2xl p-4 bg-slate-900/90 border border-emerald-500/40 relative space-y-3">
-                    <div class="flex justify-between items-center border-b border-white/10 pb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-qrcode text-emerald-400 text-sm"></i>
-                            <span class="text-xs font-bold text-white">Aegis Holographic QR Payment Scanner</span>
+                <!-- 3. PRE-PIN HARDWARE DEFENSE & OS THREAT TELEMETRY CONTROLS -->
+                <div class="p-3.5 bg-[#070b14] rounded-2xl border border-emerald-500/30 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-microchip text-emerald-400"></i> Pre-PIN OS Sensor Hooks &amp; Coercion Filters
+                        </span>
+                        <span class="text-[9px] font-mono text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Pre-Flight Intercept</span>
+                    </div>
+
+                    <!-- Screen Share Detector Banner -->
+                    <div id="realScreenShareBanner" class="p-2.5 rounded-xl bg-gradient-to-r from-purple-950/70 via-slate-900 to-indigo-950/70 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300 flex-shrink-0">
+                                <i class="fa-solid fa-display text-xs" id="realSensorIcon"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[11px] font-bold text-white">Live Screen Share Detector</span>
+                                    <span id="realSensorBadge" class="text-[9px] px-2 py-0.5 rounded-full font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">SENSOR READY</span>
+                                </div>
+                                <p class="text-[9.5px] text-slate-300" id="realSensorDesc">
+                                    Aegis hooks the media track and automatically blocks payments while screen sharing is active.
+                                </p>
+                            </div>
                         </div>
-                        <button onclick="document.getElementById('upiQrModalShowcase').classList.add('hidden')" class="text-slate-400 hover:text-white text-xs">
-                            <i class="fa-solid fa-xmark"></i>
+                        <button type="button" id="btnStartRealScreenShare" onclick="toggleRealScreenShareDetection()" class="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-[11px] flex items-center justify-center gap-1.5 shadow-md shadow-purple-600/30 transition cursor-pointer active:scale-95 flex-shrink-0">
+                            <i class="fa-solid fa-video text-[10px]" id="btnRealIcon"></i>
+                            <span id="btnRealScreenShareText">Share Screen to Test</span>
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                        <div class="md:col-span-5 flex justify-center">
-                            <img src="/static/upi_qr_shield.jpg" alt="Holographic QR Code Stand" class="w-40 h-40 object-cover rounded-xl border border-cyan-500/40 shadow-xl shadow-cyan-500/20">
-                        </div>
-                        <div class="md:col-span-7 space-y-2 text-xs">
-                            <span class="text-emerald-400 font-semibold block text-[11px]">&bull; Dynamic Levenshtein QR Decoding Active</span>
-                            <p class="text-[10px] text-slate-300 leading-relaxed">
-                                Scans dynamic BharatQR, NPCI UPI QR, and UPI Intent URLs. Pre-emptively analyzes recipient domain and Levenshtein character distance before triggering MPIN authentication.
-                            </p>
-                            <div class="flex gap-2 pt-1">
-                                <button onclick="fillVpa('rahulgear@okaxis'); document.getElementById('upiQrModalShowcase').classList.add('hidden')" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-[10px] font-semibold transition cursor-pointer">
-                                    Simulate Scan: Rahul Gear
-                                </button>
-                                <button onclick="fillVpa('ph0nepe@okaxis'); document.getElementById('upiQrModalShowcase').classList.add('hidden')" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 px-3 py-1.5 rounded-lg text-[10px] font-semibold transition cursor-pointer">
-                                    Simulate Scan: Spoofed QR
-                                </button>
+                    <!-- 4 Contextual Toggles Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <!-- Toggle 1: Voice Call -->
+                        <button type="button" id="btnToggleCall" onclick="toggleUpiContext('callActive')" class="p-2 rounded-xl border text-left transition flex flex-col justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
+                            <div class="flex items-center justify-between w-full mb-1">
+                                <i class="fa-solid fa-phone-slash text-slate-400 text-xs" id="iconCallState"></i>
+                                <span id="badgeCallStatus" class="text-[8.5px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">IDLE</span>
                             </div>
+                            <span class="text-[10.5px] font-semibold block text-slate-200">Voice Call</span>
+                            <span class="text-[8.5px] text-slate-400 font-mono truncate" id="labelCallSub">Idle (No Call)</span>
+                        </button>
+
+                        <!-- Toggle 2: Screen Mirroring -->
+                        <button type="button" id="btnToggleMirror" onclick="toggleUpiContext('screenSharing')" class="p-2 rounded-xl border text-left transition flex flex-col justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
+                            <div class="flex items-center justify-between w-full mb-1">
+                                <i class="fa-solid fa-display text-slate-400 text-xs" id="iconMirrorState"></i>
+                                <span id="badgeMirrorStatus" class="text-[8.5px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CLEAN</span>
+                            </div>
+                            <span class="text-[10.5px] font-semibold block text-slate-200">Screen Mirror</span>
+                            <span class="text-[8.5px] text-slate-400 font-mono truncate" id="labelMirrorSub">Display Secure</span>
+                        </button>
+
+                        <!-- Toggle 3: QR Origin -->
+                        <button type="button" id="btnToggleQrOrigin" onclick="toggleUpiContext('qrOrigin')" class="p-2 rounded-xl border text-left transition flex flex-col justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
+                            <div class="flex items-center justify-between w-full mb-1">
+                                <i class="fa-solid fa-camera text-slate-400 text-xs" id="iconQrState"></i>
+                                <span id="badgeQrStatus" class="text-[8.5px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CAMERA</span>
+                            </div>
+                            <span class="text-[10.5px] font-semibold block text-slate-200">QR Origin</span>
+                            <span class="text-[8.5px] text-slate-400 font-mono truncate" id="labelQrSub">Live Camera</span>
+                        </button>
+
+                        <!-- Toggle 4: Collect Request -->
+                        <button type="button" id="btnToggleCollect" onclick="toggleUpiContext('isCollect')" class="p-2 rounded-xl border text-left transition flex flex-col justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
+                            <div class="flex items-center justify-between w-full mb-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-slate-400 text-xs" id="iconCollectState"></i>
+                                <span id="badgeCollectStatus" class="text-[8.5px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PUSH</span>
+                            </div>
+                            <span class="text-[10.5px] font-semibold block text-slate-200">Intent Type</span>
+                            <span class="text-[8.5px] text-slate-400 font-mono truncate" id="labelCollectSub">P2M Push</span>
+                        </button>
+                    </div>
+
+                    <!-- Presets & Disclaimer Action Bar -->
+                    <div class="pt-2 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 w-full sm:w-auto">
+                            <span class="text-[9.5px] text-slate-400 font-medium">Scenarios:</span>
+                            <button type="button" onclick="loadUpiThreatProfile('clean')" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 text-[9.5px] font-medium transition cursor-pointer">
+                                🟢 Clean
+                            </button>
+                            <button type="button" onclick="loadUpiThreatProfile('friction')" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-amber-500/30 text-amber-300 text-[9.5px] font-medium transition cursor-pointer">
+                                🟡 Phishing
+                            </button>
+                            <button type="button" onclick="loadUpiThreatProfile('coercion')" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-500/30 text-rose-300 text-[9.5px] font-medium transition cursor-pointer">
+                                🔴 AnyDesk
+                            </button>
                         </div>
+                        <button type="button" onclick="testGooglePayDisclaimerAction()" class="w-full sm:w-auto py-1.5 px-3 rounded-lg bg-gradient-to-r from-rose-700 to-red-600 hover:from-rose-600 hover:to-red-500 text-white font-bold text-[10.5px] flex items-center justify-center gap-1.5 shadow-md shadow-rose-900/40 transition cursor-pointer active:scale-98">
+                            <i class="fa-solid fa-shield-halved text-amber-300"></i>
+                            <span>Test Google Pay Disclaimer</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- 4. NETWORK STRIP (MATCHING 'WE HAVE 200+ ... GUARANTEE' FROM REFERENCE) -->
-                <div class="rounded-2xl p-3 bg-slate-900/60 border border-white/10 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
-                    <div class="text-left">
-                        <span class="font-bold text-white block text-xs">We verify 200+ UPI handles &amp; banks</span>
-                        <span class="text-[10px] text-slate-400">Pre-flight character typo guarantee across all Indian payment PSPs</span>
-                    </div>
+                <!-- 4. PRIMARY DESKTOP CHECKOUT ACTION BUTTON -->
+                <button onclick="payUPIAction()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold py-3.5 rounded-xl text-sm shadow-xl shadow-emerald-500/25 transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Authorize &amp; Send UPI Payment</span>
+                </button>
 
-                    <!-- Glowing PSP indicator chips matching reference image chips -->
-                    <div class="flex items-center gap-1.5 flex-wrap justify-center sm:justify-end">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-purple-500/30 text-[10px] text-purple-300 font-medium">
-                            <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> PhonePe
-                        </span>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-emerald-500/30 text-[10px] text-emerald-300 font-medium">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> GPay
-                        </span>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-cyan-500/30 text-[10px] text-cyan-300 font-medium">
-                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Paytm
-                        </span>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-amber-500/30 text-[10px] text-amber-300 font-medium">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> BHIM
-                        </span>
-                    </div>
-                </div>
-
-                <!-- 5. INTERACTIVE UPI TRANSACTION TERMINAL (ALL IDS STRICTLY PRESERVED) -->
-                <div class="rounded-2xl p-4 bg-slate-900/80 border border-emerald-500/30 space-y-4">
-                    <!-- Debit Source -->
-                    <div class="flex items-center justify-between p-3 bg-[#0a0c14] border border-white/10 rounded-xl text-xs">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center text-sm shadow">
-                                <i class="fa-solid fa-building-columns"></i>
-                            </div>
-                            <div>
-                                <span class="font-medium text-white block">Primary Savings Account (XXXX 1234)</span>
-                                <span class="text-[10px] text-slate-400 font-mono">Available: &#8377; 48,250.00 &bull; IFSC: AEGS000109</span>
-                            </div>
-                        </div>
-                        <span class="text-[10px] bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">Verified</span>
-                    </div>
-
-                    <!-- Recipient VPA Input with Levenshtein Live Evaluation -->
-                    <div>
-                        <div class="flex justify-between items-center mb-1.5">
-                            <label class="block text-xs font-medium text-slate-300">Recipient UPI VPA Handle</label>
-                            <span id="vpaTypoBadge" class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Levenshtein: Safe</span>
-                        </div>
-                        <div class="relative">
-                            <input type="text" id="inputUpiTargetVPA" value="rahulgear@okaxis" oninput="checkVPAEngineLive()" class="w-full bg-[#0a0c14] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white pr-10 font-mono font-medium focus:border-emerald-400 focus:outline-none">
-                            <span id="vpaIconStatus" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-emerald-400 text-sm"><i class="fa-solid fa-circle-check"></i></span>
-                        </div>
-
-                        <!-- Live Presets for Testing -->
-                        <div class="mt-3 p-3 bg-[#0a0c14] rounded-xl border border-white/5 space-y-2">
-                            <span class="text-[11px] text-slate-300 font-medium block flex items-center gap-1.5">
-                                <i class="fa-solid fa-vial text-emerald-400"></i> Test UPI Typo-Squatting &amp; VPA Models Live:
-                            </span>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                                <button onclick="fillVpa('rahulgear@okaxis')" class="bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-emerald-500/30 p-2 rounded-lg text-left transition cursor-pointer">
-                                    <div class="font-medium flex items-center gap-1 text-[10px] text-emerald-400"><i class="fa-solid fa-check"></i> Clean Retail</div>
-                                    <div class="text-[9px] text-slate-400 font-mono truncate">rahulgear@okaxis</div>
-                                </button>
-                                <button onclick="fillVpa('elect-bill-pay@okaxis')" class="bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-amber-500/30 p-2 rounded-lg text-left transition cursor-pointer">
-                                    <div class="font-medium flex items-center gap-1 text-[10px] text-amber-400"><i class="fa-solid fa-bolt"></i> Utility Scam</div>
-                                    <div class="text-[9px] text-amber-400/80 font-mono truncate">elect-bill-pay@...</div>
-                                </button>
-                                <button onclick="fillVpa('ph0nepe@okaxis')" class="bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-rose-500/30 p-2 rounded-lg text-left transition cursor-pointer">
-                                    <div class="font-medium flex items-center gap-1 text-[10px] text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Typo Scam</div>
-                                    <div class="text-[9px] text-rose-400/80 font-mono truncate">ph0nepe@okaxis</div>
-                                </button>
-                                <button onclick="fillVpa('paytm-support@sbi')" class="bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-rose-500/30 p-2 rounded-lg text-left transition cursor-pointer">
-                                    <div class="font-medium flex items-center gap-1 text-[10px] text-rose-400"><i class="fa-solid fa-spider"></i> Phishing VPA</div>
-                                    <div class="text-[9px] text-rose-400/80 font-mono truncate">paytm-support@...</div>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Target Name Display -->
-                        <div class="flex items-center justify-between mt-3 p-2.5 bg-[#0a0c14] rounded-lg border border-white/5">
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] flex items-center justify-center border border-emerald-500/30">RG</div>
-                                <div>
-                                    <span class="text-xs text-white font-medium block" id="vpaTargetName">Rahul Gear Stores</span>
-                                    <span class="text-[9px] text-slate-400 font-mono">NPCI Verified Business</span>
-                                </div>
-                            </div>
-                            <span class="text-[10px] text-emerald-300/80"><i class="fa-solid fa-shield text-emerald-400 me-1"></i>NPCI Synced</span>
-                        </div>
-                    </div>
-
-                    <!-- Amount and Fast selector -->
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Amount (INR)</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-emerald-400 font-medium text-base">&#8377;</span>
-                            <input type="text" id="inputUpiVal" value="2,499" class="w-full bg-[#0a0c14] border border-slate-700 rounded-xl pl-9 pr-4 py-2.5 text-base font-bold text-white focus:outline-none focus:border-emerald-400">
-                        </div>
-                        <div class="flex gap-2 mt-2">
-                            <button onclick="document.getElementById('inputUpiVal').value='500'" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-medium transition border border-white/5 cursor-pointer">&#8377; 500</button>
-                            <button onclick="document.getElementById('inputUpiVal').value='1,000'" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-medium transition border border-white/5 cursor-pointer">&#8377; 1,000</button>
-                            <button onclick="document.getElementById('inputUpiVal').value='2,499'" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/40 cursor-pointer">&#8377; 2,499</button>
-                            <button onclick="document.getElementById('inputUpiVal').value='10,000'" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-medium transition border border-white/5 cursor-pointer">&#8377; 10,000</button>
-                        </div>
-                    </div>
-
-                    <!-- CONTEXTUAL SIGNALS & THREAT MULTIPLIERS (SECTION 6 OS-LEVEL DEFENSE) -->
-                    <div class="p-3.5 bg-[#0a0c14] rounded-2xl border border-emerald-500/25 space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[11px] font-semibold text-white flex items-center gap-1.5">
-                                <i class="fa-solid fa-mobile-screen-button text-emerald-400"></i>
-                                Contextual Threat Signals (OS Sensor Hooks)
-                            </span>
-                            <span class="text-[9px] font-mono text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Pre-PIN Active</span>
-                        </div>
-
-                        <!-- Real-Life Screen Share Detector Banner (Native WebRTC / MediaCapture API) -->
-                        <div id="realScreenShareBanner" class="p-3 rounded-2xl bg-gradient-to-r from-purple-950/60 via-slate-900/90 to-indigo-950/60 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300 flex-shrink-0 shadow-inner">
-                                    <i class="fa-solid fa-display text-sm" id="realSensorIcon"></i>
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs font-bold text-white tracking-wide">Real-Life Screen Share Detector</span>
-                                        <span id="realSensorBadge" class="text-[9px] px-2 py-0.5 rounded-full font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">SENSOR READY</span>
-                                    </div>
-                                    <p class="text-[10px] text-slate-300 mt-0.5" id="realSensorDesc">
-                                        Click below to share your screen/window live. Aegis hooks the media track and automatically blocks payments!
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 w-full sm:w-auto flex-shrink-0">
-                                <button type="button" id="btnStartRealScreenShare" onclick="toggleRealScreenShareDetection()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-purple-600/30 transition cursor-pointer active:scale-95">
-                                    <i class="fa-solid fa-video text-xs" id="btnRealIcon"></i>
-                                    <span id="btnRealScreenShareText">Share Screen to Test</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 4 Contextual Toggles Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                            <!-- Signal 1: Active Call Detection -->
-                            <button type="button" id="btnToggleCall" onclick="toggleUpiContext('callActive')" class="p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
-                                <div>
-                                    <span class="text-[11px] font-semibold block flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-phone-slash text-slate-400" id="iconCallState"></i> Active Voice Call
-                                    </span>
-                                    <span class="text-[9px] text-slate-400 font-mono block mt-0.5" id="labelCallSub">Idle (No Call)</span>
-                                </div>
-                                <span id="badgeCallStatus" class="text-[9px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">IDLE</span>
-                            </button>
-
-                            <!-- Signal 2: Screen Mirroring / AnyDesk -->
-                            <button type="button" id="btnToggleMirror" onclick="toggleUpiContext('screenSharing')" class="p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
-                                <div>
-                                    <span class="text-[11px] font-semibold block flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-display text-slate-400" id="iconMirrorState"></i> Screen Mirroring
-                                    </span>
-                                    <span class="text-[9px] text-slate-400 font-mono block mt-0.5" id="labelMirrorSub">Display Secure</span>
-                                </div>
-                                <span id="badgeMirrorStatus" class="text-[9px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CLEAN</span>
-                            </button>
-
-                            <!-- Signal 3: QR Ingestion Source -->
-                            <button type="button" id="btnToggleQrOrigin" onclick="toggleUpiContext('qrOrigin')" class="p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
-                                <div>
-                                    <span class="text-[11px] font-semibold block flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-camera text-slate-400" id="iconQrState"></i> QR Code Source
-                                    </span>
-                                    <span class="text-[9px] text-slate-400 font-mono block mt-0.5" id="labelQrSub">Live Camera Scan</span>
-                                </div>
-                                <span id="badgeQrStatus" class="text-[9px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CAMERA</span>
-                            </button>
-
-                            <!-- Signal 4: Payment Request Type -->
-                            <button type="button" id="btnToggleCollect" onclick="toggleUpiContext('isCollect')" class="p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500">
-                                <div>
-                                    <span class="text-[11px] font-semibold block flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-400" id="iconCollectState"></i> Payment Intent
-                                    </span>
-                                    <span class="text-[9px] text-slate-400 font-mono block mt-0.5" id="labelCollectSub">P2M Push Payment</span>
-                                </div>
-                                <span id="badgeCollectStatus" class="text-[9px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PUSH</span>
-                            </button>
-                        </div>
-
-                        <!-- 3 Quick Simulation Scenario Presets -->
-                        <div class="pt-2 border-t border-white/5 space-y-2">
-                            <span class="text-[10px] text-slate-400 font-medium block">⚡ Pre-Configured Social Engineering Threat Profiles:</span>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-xs">
-                                <button type="button" onclick="loadUpiThreatProfile('clean')" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 text-[10px] font-medium flex items-center gap-1.5 transition cursor-pointer">
-                                    <i class="fa-solid fa-circle-check text-emerald-400 text-[9px]"></i> 1. Clean Store
-                                </button>
-                                <button type="button" onclick="loadUpiThreatProfile('friction')" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-amber-500/30 text-amber-300 text-[10px] font-medium flex items-center gap-1.5 transition cursor-pointer">
-                                    <i class="fa-solid fa-clock text-amber-400 text-[9px]"></i> 2. Phishing QR (Friction)
-                                </button>
-                                <button type="button" onclick="loadUpiThreatProfile('coercion')" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-500/30 text-rose-300 text-[10px] font-medium flex items-center gap-1.5 transition cursor-pointer">
-                                    <i class="fa-solid fa-triangle-exclamation text-rose-400 text-[9px]"></i> 3. AnyDesk Scam
-                                </button>
-                            </div>
-                            <!-- One-Tap Google Pay Disclaimer Tester -->
-                            <button type="button" onclick="testGooglePayDisclaimerAction()" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-700 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-900/40 transition cursor-pointer active:scale-98">
-                                <i class="fa-solid fa-shield-halved text-amber-300 animate-pulse"></i>
-                                <span>⚠️ Test Google Pay Screen-Share / Call Disclaimer</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Pay Button (Gradient Emerald Pill) -->
-                    <button onclick="payUPIAction()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold py-3.5 rounded-xl text-xs shadow-lg shadow-emerald-500/25 transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        <span>Authorize &amp; Send UPI Payment</span>
-                    </button>
-                </div>
-
-                <!-- 6. 'SECURE & PRIVATE' 3-FEATURE CARD GRID (DIRECT MATCH TO REFERENCE IMAGE BOTTOM) -->
-                <div class="pt-2 text-center">
-                    <h3 class="text-sm font-normal text-white mb-2">
-                        <span class="font-serif italic font-normal text-slate-300">Secure &amp; Private</span> &bull; Pre-flight Verification
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-left text-xs">
-                        <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1">
-                            <div class="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-[10px]">
-                                <i class="fa-solid fa-bolt"></i>
-                            </div>
-                            <span class="font-bold text-white block text-[11px]">Instant Resolution</span>
-                            <p class="text-[9px] text-slate-400 leading-tight">Fast DNS-grade lookup across all NPCI PSP bank directories.</p>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1">
-                            <div class="w-6 h-6 rounded-lg bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-[10px]">
-                                <i class="fa-solid fa-shield-virus"></i>
-                            </div>
-                            <span class="font-bold text-white block text-[11px]">Levenshtein Guard</span>
-                            <p class="text-[9px] text-slate-400 leading-tight">Pre-emptively intercepts character substitutions and lookalike VPAs.</p>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1">
-                            <div class="w-6 h-6 rounded-lg bg-purple-500/15 text-purple-400 flex items-center justify-center text-[10px]">
-                                <i class="fa-solid fa-microchip"></i>
-                            </div>
-                            <span class="font-bold text-white block text-[11px]">Model 3 XGBoost</span>
-                            <p class="text-[9px] text-slate-400 leading-tight">Evaluates transaction velocity, collect trap ratios, and fraud risk.</p>
-                        </div>
-                    </div>
+                <!-- 5. DESKTOP FOOTER TRUST BAR -->
+                <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-white/5">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield text-emerald-400"></i> 256-Bit NPCI UPI 2.0 Security Architecture
+                    </span>
+                    <span class="font-mono text-emerald-400/80">Sub-35ms Latency Guarantee</span>
                 </div>
             </div>
 
-            <div class="text-center pt-2 text-xs text-slate-400 border-t border-white/10 relative z-10">
-                <i class="fa-solid fa-shield text-emerald-400 me-1"></i> Protected by Aegis Pre-flight VPA Defense &bull; Levenshtein Engine &bull; Model 3 XGBoost
-            </div>
+            <!-- Holographic QR Scanner Modal (Preserved for compatibility) -->
+            <div id="upiQrModalShowcase" class="hidden"></div>
         </div>
 
 
