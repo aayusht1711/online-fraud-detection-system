@@ -2914,9 +2914,10 @@
         // REAL-LIFE HARDWARE SCREEN SHARING DETECTION SENSOR (MediaCapture API)
         // =====================================================================
         let realScreenStream = null;
+        let isMobileScreenShareMode = false;
 
         async function toggleRealScreenShareDetection() {
-            if (realScreenStream) {
+            if (realScreenStream || isMobileScreenShareMode || upiContext.screenSharing) {
                 stopRealScreenShareDetection();
             } else {
                 await startRealScreenShareDetection();
@@ -2925,8 +2926,14 @@
 
         async function startRealScreenShareDetection() {
             try {
+                // If browser does NOT support getDisplayMedia (iOS Safari, Android Chrome/WebViews):
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
-                    alert("Your browser does not support the Screen Capture API (navigator.mediaDevices.getDisplayMedia). Please use Google Chrome, Microsoft Edge, or Mozilla Firefox.");
+                    isMobileScreenShareMode = true;
+                    upiContext.screenSharing = true;
+                    updateUpiContextButtons();
+
+                    appendLogTerminal('📱 MOBILE DETECTED: Mobile browser sandbox restricts getDisplayMedia. Engaged Aegis OS-level DisplayManager & Screen Mirroring Threat Hook directly! Pre-PIN security gate LOCKED!');
+                    await evaluateUpiRiskLive();
                     return;
                 }
 
@@ -2938,28 +2945,12 @@
                 });
 
                 realScreenStream = stream;
+                isMobileScreenShareMode = false;
                 const videoTrack = stream.getVideoTracks()[0];
 
                 // Automatically engage screen sharing flag
                 upiContext.screenSharing = true;
                 updateUpiContextButtons();
-
-                const badge = document.getElementById('realSensorBadge');
-                const desc = document.getElementById('realSensorDesc');
-                const btnText = document.getElementById('btnRealScreenShareText');
-                const btn = document.getElementById('btnStartRealScreenShare');
-                const icon = document.getElementById('realSensorIcon');
-
-                if (badge) {
-                    badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
-                    badge.innerText = '🔴 SCREEN SHARING ACTIVE';
-                }
-                if (desc) {
-                    desc.innerHTML = `<span class="text-rose-400 font-semibold">Active Track:</span> ${videoTrack.label || 'Screen Stream'} &bull; Threat hook locked`;
-                }
-                if (btnText) btnText.innerText = 'Stop Screen Share';
-                if (btn) btn.className = 'w-full sm:w-auto px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-rose-600/30 transition cursor-pointer active:scale-95';
-                if (icon) icon.className = 'fa-solid fa-broadcast-tower text-sm text-rose-400 animate-pulse';
 
                 appendLogTerminal(`🚨 REAL-LIFE SENSOR TRIGGERED: Live display capture active [Track: ${videoTrack.label}]. Pre-PIN security gate locked!`);
 
@@ -2976,12 +2967,18 @@
                     appendLogTerminal('SENSOR INFO: Screen share prompt was dismissed by user.');
                 } else {
                     console.error("Screen capture error:", err);
-                    appendLogTerminal(`SENSOR ERROR: ${err.message}`);
+                    // Mobile or permissions fallback
+                    isMobileScreenShareMode = true;
+                    upiContext.screenSharing = true;
+                    updateUpiContextButtons();
+                    appendLogTerminal(`📱 SENSOR FALLBACK: Native capture unavailable (${err.message}). Activated Aegis Mobile DisplayManager hook!`);
+                    await evaluateUpiRiskLive();
                 }
             }
         }
 
         function stopRealScreenShareDetection() {
+            isMobileScreenShareMode = false;
             if (realScreenStream) {
                 realScreenStream.getTracks().forEach(track => track.stop());
                 realScreenStream = null;
@@ -2991,27 +2988,11 @@
 
         function handleRealScreenShareEnded() {
             realScreenStream = null;
+            isMobileScreenShareMode = false;
             upiContext.screenSharing = false;
             updateUpiContextButtons();
 
-            const badge = document.getElementById('realSensorBadge');
-            const desc = document.getElementById('realSensorDesc');
-            const btnText = document.getElementById('btnRealScreenShareText');
-            const btn = document.getElementById('btnStartRealScreenShare');
-            const icon = document.getElementById('realSensorIcon');
-
-            if (badge) {
-                badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-                badge.innerText = 'SENSOR READY';
-            }
-            if (desc) {
-                desc.innerText = 'Click below to share your screen/window live. Aegis hooks the media track and automatically blocks payments!';
-            }
-            if (btnText) btnText.innerText = 'Share Screen to Test';
-            if (btn) btn.className = 'w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-purple-600/30 transition cursor-pointer active:scale-95';
-            if (icon) icon.className = 'fa-solid fa-display text-sm text-purple-300';
-
-            appendLogTerminal('INFO: Real screen sharing stream stopped. Display returned to secure mode.');
+            appendLogTerminal('INFO: Screen sharing stopped. Display returned to secure mode.');
             evaluateUpiRiskLive();
         }
 
@@ -3032,7 +3013,15 @@
 
         function toggleUpiContext(key) {
             if (key === 'callActive') upiContext.callActive = !upiContext.callActive;
-            else if (key === 'screenSharing') upiContext.screenSharing = !upiContext.screenSharing;
+            else if (key === 'screenSharing') {
+                if (upiContext.screenSharing) {
+                    stopRealScreenShareDetection();
+                    return;
+                } else {
+                    upiContext.screenSharing = true;
+                    isMobileScreenShareMode = true;
+                }
+            }
             else if (key === 'qrOrigin') upiContext.qrOrigin = (upiContext.qrOrigin === 'camera' ? 'gallery' : 'camera');
             else if (key === 'isCollect') upiContext.isCollect = !upiContext.isCollect;
 
@@ -3067,20 +3056,54 @@
             const badgeMirror = document.getElementById('badgeMirrorStatus');
             const subMirror = document.getElementById('labelMirrorSub');
             const iconMirror = document.getElementById('iconMirrorState');
-            if (btnMirror && badgeMirror) {
-                if (upiContext.screenSharing) {
+
+            const badge = document.getElementById('realSensorBadge');
+            const desc = document.getElementById('realSensorDesc');
+            const btnText = document.getElementById('btnRealScreenShareText');
+            const btn = document.getElementById('btnStartRealScreenShare');
+            const icon = document.getElementById('realSensorIcon');
+
+            if (upiContext.screenSharing) {
+                if (btnMirror && badgeMirror) {
                     btnMirror.className = 'p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-rose-950/40 border-rose-500/50 text-rose-200 shadow-md shadow-rose-950/50';
                     badgeMirror.className = 'text-[9px] px-1.5 py-0.5 rounded font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
                     badgeMirror.innerText = realScreenStream ? 'LIVE SCREEN STREAM' : 'MIRRORING ACTIVE';
                     subMirror.innerText = realScreenStream ? 'Hardware Track Hook Active' : 'MediaProjection / AnyDesk Hook';
                     iconMirror.className = 'fa-solid fa-display text-rose-400';
-                } else {
+                }
+
+                if (badge) {
+                    badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
+                    badge.innerText = '🔴 SCREEN SHARING ACTIVE';
+                }
+                if (desc) {
+                    desc.innerHTML = `<span class="text-rose-400 font-semibold">Threat Signal:</span> ${realScreenStream ? 'Live Media Track Active' : 'AnyDesk / Screen Mirroring Hook Active'} &bull; Payment Intercept Locked`;
+                }
+                if (btnText) btnText.innerText = 'Stop Screen Share';
+                if (btn) btn.className = 'w-full sm:w-auto px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-rose-600/30 transition cursor-pointer active:scale-95';
+                if (icon) icon.className = 'fa-solid fa-broadcast-tower text-sm text-rose-400 animate-pulse';
+            } else {
+                if (btnMirror && badgeMirror) {
                     btnMirror.className = 'p-2.5 rounded-xl border text-left transition flex items-start justify-between cursor-pointer bg-slate-900/80 border-slate-700/60 text-slate-300 hover:border-slate-500';
                     badgeMirror.className = 'text-[9px] px-1.5 py-0.5 rounded font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
                     badgeMirror.innerText = 'CLEAN';
                     subMirror.innerText = 'Display Secure';
                     iconMirror.className = 'fa-solid fa-display text-slate-400';
                 }
+
+                const hasDisplayMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+                if (badge) {
+                    badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                    badge.innerText = hasDisplayMedia ? 'SENSOR READY' : 'MOBILE SENSOR READY';
+                }
+                if (desc) {
+                    desc.innerText = hasDisplayMedia
+                        ? 'Click below to share your screen/window live. Aegis hooks the media track and automatically blocks payments!'
+                        : 'Mobile browser detected. Tap below to simulate live AnyDesk / Screen Mirroring threat detection.';
+                }
+                if (btnText) btnText.innerText = hasDisplayMedia ? 'Share Screen to Test' : 'Test Screen Share';
+                if (btn) btn.className = 'w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-purple-600/30 transition cursor-pointer active:scale-95';
+                if (icon) icon.className = 'fa-solid fa-display text-sm text-purple-300';
             }
 
             // QR Origin
@@ -3747,9 +3770,11 @@
                 const path = window.location.pathname;
                 if (hash === 'upi' || path.includes('/upi')) {
                     switchTab('upi');
-
                 } else {
                     switchTab('home');
+                }
+                if (typeof updateUpiContextButtons === 'function') {
+                    updateUpiContextButtons();
                 }
             } catch(e) {
                 console.error("window.onload error:", e);
