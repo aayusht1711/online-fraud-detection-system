@@ -33,4 +33,12 @@ static/*.apk
 static/dossiers/I4C_Form1930_Dossier_I4C-*.pdf
 static/dossiers/test_sample_dossier.pdf
 
+# Android Studio & Gradle Caches
+android_app/**/build/
+android_app/**/.gradle/
+android_app/**/.idea/
+android_app/**/.kotlin/
+android_app/**/local.properties
+android_app/**/*.apk
+
 
