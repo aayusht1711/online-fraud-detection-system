@@ -840,7 +840,7 @@
 
                             <!-- Big Balance Amount -->
                             <div class="flex items-baseline gap-2">
-                                <span class="text-3xl md:text-4xl font-bold tracking-tight text-white">$12,480<span class="text-xl md:text-2xl text-slate-300 font-normal">.42</span></span>
+                                <span id="fernAccountBalance" class="text-3xl md:text-4xl font-bold tracking-tight text-white">$12,480<span class="text-xl md:text-2xl text-slate-300 font-normal">.42</span></span>
                             </div>
                             <div class="flex items-center gap-1.5 text-xs text-purple-300 font-medium mt-0.5">
                                 <i class="fa-solid fa-arrow-trend-up text-[10px]"></i>
@@ -933,44 +933,60 @@
                 <div id="portalTransferBox" class="hidden fern-glass-card rounded-2xl p-4 my-2.5 border border-purple-500/40 bg-purple-950/25 space-y-3">
                     <div class="flex justify-between items-center pb-2 border-b border-purple-500/20">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
-                            <span class="text-xs font-bold text-white">Ghost Sandbox: Transfer Interception Engine</span>
+                            <span id="portalTransferPulse" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="portalTransferTitle" class="text-xs font-bold text-white">Core Banking: Instant Wire Transfer</span>
                         </div>
-                        <span class="text-[9px] text-rose-300 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 font-mono">SANDBOX ISOLATED &bull; TTL 1800s</span>
+                        <span id="portalTransferBadge" class="text-[9px] text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono">AUTHENTICATED &bull; 256-BIT ENCRYPTION</span>
                     </div>
 
                     <!-- Preset Target Selector -->
                     <div>
                         <span class="text-[10px] text-slate-400 block mb-1 font-medium">Quick Target Presets:</span>
                         <div class="flex gap-2">
-                            <button type="button" onclick="selectMulePreset('mule_sweep01@okaxis', '75,000.00')" class="flex-1 py-1.5 px-2 bg-purple-900/40 hover:bg-purple-800/40 border border-purple-500/30 rounded-lg text-[10px] text-purple-200 transition font-mono truncate">
-                                🎯 Mule 1: mule_sweep01@okaxis (&#8377;75k)
+                            <button type="button" onclick="selectCleanPreset('sarah.partner@icici', '1,500.00')" class="flex-1 py-1.5 px-2 bg-emerald-900/40 hover:bg-emerald-800/40 border border-emerald-500/30 rounded-lg text-[10px] text-emerald-200 transition font-mono truncate">
+                                ✅ Clean: sarah.partner@icici (&#8377;1.5k)
                             </button>
-                            <button type="button" onclick="selectMulePreset('payout_fast99@ibl', '50,000.00')" class="flex-1 py-1.5 px-2 bg-purple-900/40 hover:bg-purple-800/40 border border-purple-500/30 rounded-lg text-[10px] text-purple-200 transition font-mono truncate">
-                                🎯 Mule 2: payout_fast99@ibl (&#8377;50k)
+                            <button type="button" onclick="selectMulePreset('mule_sweep01@okaxis', '75,000.00')" class="flex-1 py-1.5 px-2 bg-purple-900/40 hover:bg-purple-800/40 border border-purple-500/30 rounded-lg text-[10px] text-purple-200 transition font-mono truncate">
+                                🎯 Mule: mule_sweep01 (&#8377;75k)
                             </button>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-[10px] text-slate-400 mb-1 font-medium">Beneficiary UPI VPA / Account</label>
-                        <input type="text" id="decoyTargetAcc" value="mule_sweep01@okaxis" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 text-xs text-white font-mono focus:border-rose-400 focus:outline-none">
+                        <input type="text" id="decoyTargetAcc" value="sarah.partner@icici" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 text-xs text-white font-mono focus:border-rose-400 focus:outline-none">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] text-slate-400 mb-1 font-medium">Exfiltration Amount (&#8377;)</label>
-                        <input type="text" id="decoyAmt" value="75,000.00" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 text-xs text-white font-bold focus:border-rose-400 focus:outline-none">
+                        <label id="labelDecoyAmt" class="block text-[10px] text-slate-400 mb-1 font-medium">Transfer Amount (&#8377;)</label>
+                        <input type="text" id="decoyAmt" value="1,500.00" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 text-xs text-white font-bold focus:border-rose-400 focus:outline-none">
                     </div>
 
-                    <button onclick="execDecoyTransfer()" id="btnDecoySend" class="w-full bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-lg shadow-rose-600/30 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2">
+                    <button onclick="execDecoyTransfer()" id="btnDecoySend" class="w-full bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-lg shadow-emerald-600/30 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> Authorize & Send Transfer
                     </button>
 
                     <div id="decoySpinner" class="hidden text-xs text-purple-300 text-center py-2.5 font-mono bg-purple-950/40 rounded-xl border border-purple-500/20">
-                        <i class="fa-solid fa-circle-notch fa-spin text-purple-400 mr-2"></i> <span id="spinnerMsg">Connecting to NPCI Financial Switch (Injecting 1,250ms switch lag)...</span>
+                        <i class="fa-solid fa-circle-notch fa-spin text-purple-400 mr-2"></i> <span id="spinnerMsg">Connecting to Core Banking Financial Switch (IMPS/RTGS)...</span>
                     </div>
 
-                    <!-- Deterministic Error Stalling Box -->
+                    <!-- Clean Transfer Settlement Success Box -->
+                    <div id="transferSuccessBox" class="hidden rounded-xl p-3 bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs space-y-2 animate-fade-in">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5 font-bold text-emerald-400">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span id="transferSuccessTitle">Wire Transfer Settled Successfully</span>
+                            </div>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">CLEARED &bull; 12ms</span>
+                        </div>
+                        <p class="text-[11px] text-slate-200" id="transferSuccessMsg">Payment completed via Core Banking Switch. Ledger updated.</p>
+                        <div class="flex justify-between items-center pt-1 border-t border-emerald-500/20 text-[10px]">
+                            <span class="text-slate-400 font-mono" id="transferSuccessRef">Ref: IMPS/2026/891204</span>
+                            <span class="text-emerald-400 font-bold" id="transferSuccessAmt">&#8377; 1,500.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Deterministic Error Stalling Box (Honeypot Trap) -->
                     <div id="decoyErrorBox" class="hidden rounded-xl p-3 bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs space-y-2 animate-fade-in">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-1.5 font-bold text-amber-400">
@@ -1030,7 +1046,7 @@
                 </div>
 
                 <!-- 7. RECENT TRANSACTIONS STREAM (REALISTIC USER BANK ACTIVITY) -->
-                <div class="fern-glass-card rounded-2xl p-4 my-2 border border-white/10 space-y-2.5">
+                <div id="recentTransactionsList" class="fern-glass-card rounded-2xl p-4 my-2 border border-white/10 space-y-2.5">
                     <div class="flex justify-between items-center pb-2 border-b border-white/10">
                         <span class="text-xs font-bold text-white">Recent Transactions</span>
                         <span class="text-[10px] text-purple-300 hover:underline cursor-pointer">View All (14)</span>
@@ -2006,6 +2022,7 @@
         let honeypotDwellTimer = null;
         let honeypotDwellSeconds = 0;
         let aegisBotRetryTimeout = null;
+        let userCheckingBalance = 12480.42;
         window.aegisBotAutoRetry = false;
 
         function triggerHoneypotTripwireDirect() {
@@ -2016,6 +2033,28 @@
             setTimeout(() => {
                 showTransferModal();
             }, 600);
+        }
+
+        function selectCleanPreset(vpa, amt) {
+            honeypotRetryCount = 0;
+            window.aegisBotAutoRetry = false;
+            if (aegisBotRetryTimeout) {
+                clearTimeout(aegisBotRetryTimeout);
+                aegisBotRetryTimeout = null;
+            }
+            document.getElementById('decoyTargetAcc').value = vpa;
+            document.getElementById('decoyAmt').value = amt;
+            const errBox = document.getElementById('decoyErrorBox');
+            if (errBox) errBox.classList.add('hidden');
+            const succBox = document.getElementById('transferSuccessBox');
+            if (succBox) succBox.classList.add('hidden');
+            const btn = document.getElementById('btnDecoySend');
+            if (btn) {
+                btn.disabled = false;
+                btn.className = 'w-full bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-lg shadow-emerald-600/30 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2';
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Authorize & Send Transfer';
+            }
+            showAegisNotification('Preset Applied', `Target set to ${vpa} for ₹ ${amt}`, 'info');
         }
 
         function selectMulePreset(vpa, amt) {
@@ -2029,6 +2068,8 @@
             document.getElementById('decoyAmt').value = amt;
             const errBox = document.getElementById('decoyErrorBox');
             if (errBox) errBox.classList.add('hidden');
+            const succBox = document.getElementById('transferSuccessBox');
+            if (succBox) succBox.classList.add('hidden');
             const retryBtn = document.getElementById('btnDecoyRetry');
             if (retryBtn) {
                 retryBtn.disabled = false;
@@ -2056,19 +2097,114 @@
         }
 
         async function execDecoyTransfer() {
-            honeypotRetryCount++;
-            startHoneypotDwellTimer();
-
             const btn = document.getElementById('btnDecoySend');
             const spinner = document.getElementById('decoySpinner');
             const errBox = document.getElementById('decoyErrorBox');
+            const successBox = document.getElementById('transferSuccessBox');
             const amtStr = document.getElementById('decoyAmt').value.replace(/,/g, '');
-            const amt = parseFloat(amtStr) || 75000;
-            const target = document.getElementById('decoyTargetAcc').value.trim() || 'mule_sweep01@okaxis';
+            const amt = parseFloat(amtStr) || 1500;
+            const target = document.getElementById('decoyTargetAcc').value.trim() || 'sarah.partner@icici';
+
+            if (errBox) errBox.classList.add('hidden');
+            if (successBox) successBox.classList.add('hidden');
+
+            const isAttackerTrapped = (document.getElementById('fernUserBadge') && document.getElementById('fernUserBadge').innerText.includes('DECOY SANDBOX')) ||
+                                     (window.aegisSensor && window.aegisSensor.isBotSimActive) ||
+                                     window.aegisBotAutoRetry;
+            const isMuleTarget = target.includes('mule_sweep01') || target.includes('payout_fast99');
+
+            // --- BRANCH 1: AUTHENTIC LEGITIMATE USER WIRE TRANSFER ---
+            if (!isAttackerTrapped && !isMuleTarget) {
+                if (btn) btn.classList.add('hidden');
+                if (spinner) {
+                    spinner.classList.remove('hidden');
+                    const sMsg = document.getElementById('spinnerMsg');
+                    if (sMsg) sMsg.innerText = `Connecting to Core Banking Switch (Settling ₹ ${amt.toLocaleString()} via IMPS/RTGS)...`;
+                }
+
+                appendLogTerminal(`CORE BANKING TRANSFER INITIATED: Authorizing ₹ ${amt} to "${target}". Pre-flight validation passed.`);
+
+                try {
+                    const res = await fetch('/api/sandbox/transfer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            amount: amt,
+                            beneficiary: target,
+                            session_id: 'AUTH_LEGIT_SESSION',
+                            is_legitimate: true
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (spinner) spinner.classList.add('hidden');
+                    if (btn) btn.classList.remove('hidden');
+
+                    // Deduct balance
+                    userCheckingBalance = Math.max(0, userCheckingBalance - amt);
+                    const balElem = document.getElementById('fernAccountBalance');
+                    if (balElem) {
+                        const whole = Math.floor(userCheckingBalance).toLocaleString();
+                        const frac = (userCheckingBalance % 1).toFixed(2).substring(1);
+                        balElem.innerHTML = `$${whole}<span class="text-xl md:text-2xl text-slate-300 font-normal">${frac}</span>`;
+                    }
+
+                    const txRef = 'IMPS/' + Math.floor(Math.random() * 89999999 + 10000000);
+
+                    // Show Success Box
+                    if (successBox) {
+                        successBox.classList.remove('hidden');
+                        document.getElementById('transferSuccessTitle').innerText = 'Wire Transfer Settled Successfully';
+                        document.getElementById('transferSuccessMsg').innerHTML = `Payment of <strong>₹ ${amt.toLocaleString()}</strong> to <strong>${target}</strong> completed via Core Banking Switch. Zero anomalies detected.`;
+                        document.getElementById('transferSuccessRef').innerText = `Ref: ${txRef}`;
+                        document.getElementById('transferSuccessAmt').innerText = `₹ ${amt.toLocaleString()}`;
+                    }
+
+                    // Prepend to Recent Transactions List
+                    const recents = document.getElementById('recentTransactionsList');
+                    if (recents) {
+                        const newRow = document.createElement('div');
+                        newRow.className = 'flex justify-between items-center text-xs animate-in fade-in slide-in-from-top-2 duration-300 border-b border-white/5 pb-2 pt-1';
+                        newRow.innerHTML = `
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-300 text-[11px]">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-white block leading-tight">Wire to ${target}</span>
+                                    <span class="text-[9px] text-emerald-400">Just now &bull; Settled (IMPS)</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-bold text-rose-400 block">-₹ ${amt.toLocaleString()}</span>
+                                <span class="text-[9px] text-slate-400 font-mono">${txRef}</span>
+                            </div>
+                        `;
+                        recents.insertBefore(newRow, recents.children[1] || recents.firstChild);
+                    }
+
+                    appendLogTerminal(`TRANSACTION CLEARED: Ref ${txRef}. Transferred ₹ ${amt} to ${target}. Production ledger updated.`);
+                    showAegisNotification('Transfer Successful', `₹ ${amt.toLocaleString()} sent cleanly to ${target}.`, 'success');
+
+                } catch (e) {
+                    console.error("Clean transfer error:", e);
+                    if (spinner) spinner.classList.add('hidden');
+                    if (btn) btn.classList.remove('hidden');
+                }
+                return;
+            }
+
+            // --- BRANCH 2: HONEYPOT / BOT EXFILTRATION TARPIT (STALLED SWITCH DECEPTION) ---
+            honeypotRetryCount++;
+            startHoneypotDwellTimer();
 
             if (btn) btn.classList.add('hidden');
             if (errBox) errBox.classList.add('hidden');
-            if (spinner) spinner.classList.remove('hidden');
+            if (spinner) {
+                spinner.classList.remove('hidden');
+                const sMsg = document.getElementById('spinnerMsg');
+                if (sMsg) sMsg.innerText = 'Connecting to NPCI Financial Switch (Injecting 1,250ms switch lag)...';
+            }
 
             appendLogTerminal(`HONEYPOT EXFILTRATION INITIATED: Attempted ₹ ${amt} to "${target}". Cycle ${honeypotRetryCount}...`);
 
@@ -2542,6 +2678,17 @@
                                 transferBox.classList.remove('hidden');
                                 if (decoyTarget) decoyTarget.value = 'mule_sweep01@okaxis';
                                 if (decoyAmt) decoyAmt.value = '75,000.00';
+                                const ptTitle = document.getElementById('portalTransferTitle');
+                                if (ptTitle) ptTitle.innerText = 'Ghost Sandbox: Transfer Interception Engine';
+                                const ptBadge = document.getElementById('portalTransferBadge');
+                                if (ptBadge) {
+                                    ptBadge.innerText = 'SANDBOX ISOLATED • TTL 1800s';
+                                    ptBadge.className = 'text-[9px] text-rose-300 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 font-mono';
+                                }
+                                const ptPulse = document.getElementById('portalTransferPulse');
+                                if (ptPulse) ptPulse.className = 'w-2 h-2 rounded-full bg-rose-400 animate-pulse';
+                                const hudBeacon = document.getElementById('honeypotBeaconHud');
+                                if (hudBeacon) hudBeacon.classList.remove('hidden');
                                 transferBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
                                 // Automated Bot Exfiltration: bot triggers transfer attempt after entering sandbox
@@ -2620,6 +2767,29 @@
                     failedLoginCount = 0;
                     if (errBanner) errBanner.classList.add('hidden');
                     if (counter) counter.classList.add('hidden');
+
+                    // Initialize clean transfer parameters for authentic user
+                    if (decoyTarget) decoyTarget.value = 'sarah.partner@icici';
+                    if (decoyAmt) decoyAmt.value = '1,500.00';
+                    const ptTitle = document.getElementById('portalTransferTitle');
+                    if (ptTitle) ptTitle.innerText = 'Core Banking: Instant Wire Transfer';
+                    const ptBadge = document.getElementById('portalTransferBadge');
+                    if (ptBadge) {
+                        ptBadge.innerText = 'AUTHENTICATED • 256-BIT ENCRYPTION';
+                        ptBadge.className = 'text-[9px] text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono';
+                    }
+                    const ptPulse = document.getElementById('portalTransferPulse');
+                    if (ptPulse) ptPulse.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+                    const hudBeacon = document.getElementById('honeypotBeaconHud');
+                    if (hudBeacon) hudBeacon.classList.add('hidden');
+                    const errB = document.getElementById('decoyErrorBox');
+                    if (errB) errB.classList.add('hidden');
+                    const succB = document.getElementById('transferSuccessBox');
+                    if (succB) succB.classList.add('hidden');
+                    if (fernBadge) {
+                        fernBadge.className = 'flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-medium';
+                        fernBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> <span>Alex Morgan</span>';
+                    }
 
                     const authPayload = { failed_attempts: 0, typing_speed_similarity: 0.9, mouse_movement_entropy: 2.8, is_new_device: 0, vpn_data_center_flag: 0 };
                     try {
@@ -3048,6 +3218,14 @@
                 upiContext.screenSharing = false;
                 upiContext.qrOrigin = 'camera';
                 upiContext.isCollect = false;
+                if (realScreenStream) {
+                    realScreenStream.getTracks().forEach(track => track.stop());
+                    realScreenStream = null;
+                }
+                isMobileScreenShareMode = false;
+                if (window.aegisSensor && typeof window.aegisSensor.resetLiveSensor === 'function') {
+                    window.aegisSensor.resetLiveSensor();
+                }
                 appendLogTerminal('SIMULATION: Loaded Profile 1 - Clean Retail Store (Zero Friction expected).');
             } else if (profile === 'friction') {
                 document.getElementById('inputUpiTargetVPA').value = 'elec.174@okaxis';
@@ -3128,7 +3306,9 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        upi_brand_similarity: vpaData.max_similarity,
+                        upi_brand_similarity: vpaData.is_typo_squatting ? vpaData.max_similarity : 0.0,
+                        is_bbps_verified: vpaData.is_bbps_verified ? 1 : 0,
+                        is_typo_squatting: vpaData.is_typo_squatting ? 1 : 0,
                         transaction_amount_ratio: amt / 2000,
                         is_collect_request: upiContext.isCollect ? 1 : 0,
                         screen_sharing_active: upiContext.screenSharing ? 1 : 0,
@@ -3371,10 +3551,9 @@
         }
 
         function showUpiReceiptModal() {
-            if (!lastUpiResult) return;
-            const amt = lastUpiResult.amt || 2499;
-            const vpa = lastUpiResult.vpa || 'rahulgear@okaxis';
-            const targetName = lastUpiResult.targetName || 'Rahul Gear Stores';
+            const vpa = (lastUpiResult && lastUpiResult.vpa) ? lastUpiResult.vpa : (document.getElementById('inputUpiTargetVPA')?.value.trim() || 'rahulgear@okaxis');
+            const amt = (lastUpiResult && lastUpiResult.amt) ? lastUpiResult.amt : (parseFloat(document.getElementById('inputUpiVal')?.value.replace(/,/g, '')) || 2499);
+            const targetName = (lastUpiResult && lastUpiResult.targetName) ? lastUpiResult.targetName : (document.getElementById('vpaTargetName')?.innerText || 'Rahul Gear Stores');
 
             const rAmt = document.getElementById('receiptAmt');
             const rPayee = document.getElementById('receiptPayee');
@@ -3394,6 +3573,9 @@
                 m.classList.remove('hidden');
             }
             appendLogTerminal(`TRANSACTION CLEARED & SETTLED: Ref ${randomRef}. ₹ ${amt} paid to ${vpa}. Zero friction latency: 12ms.`);
+            if (typeof showAegisNotification === 'function') {
+                showAegisNotification('Payment Successful', `₹ ${Number(amt).toLocaleString('en-IN')} paid to ${targetName}.`, 'success');
+            }
         }
 
         function closeUpiReceiptModal() {

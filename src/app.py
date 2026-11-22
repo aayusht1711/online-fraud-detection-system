@@ -160,14 +160,24 @@ def download_dossier(incident_id):
 
 @app.route("/api/sandbox/transfer", methods=["POST"])
 def honeypot_transfer():
-    """Decoy Endpoint returning synthetic success to trapped attacker"""
+    """Core Banking Wire Settlement & Decoy Payout Endpoint"""
+    import random, time
     data = request.json or {}
+    amt = float(data.get("amount", 1500.0))
+    target = data.get("beneficiary", "sarah.partner@icici")
+    is_legit = bool(data.get("is_legitimate", True))
+    tx_id = f"IMPS_TXN_{random.randint(10000000, 99999999)}"
+    
+    print(f"[CORE BANKING] Wire transfer settled: ₹ {amt:,.2f} -> {target} | Ref: {tx_id}")
     return jsonify({
         "status": "success",
-        "transaction_id": "GHOST_TX_9921",
-        "message": "Transfer processed successfully",
-        "transferred_amount": data.get("amount", 14.20),
-        "sandbox_mode": True
+        "transaction_id": tx_id,
+        "message": f"Transfer of ₹ {amt:,.2f} to {target} processed successfully via IMPS/RTGS",
+        "transferred_amount": amt,
+        "beneficiary": target,
+        "settlement_channel": "IMPS_CORE_CLEARANCE",
+        "cleared_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "is_legitimate": is_legit
     })
 
 @app.route("/api/honeypot/stalled-transfer", methods=["POST"])

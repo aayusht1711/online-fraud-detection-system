@@ -48,6 +48,12 @@ class FraudInferenceEngine:
         brand_sim = float(transaction_data.get('upi_brand_similarity', 0.0))
         spam_score = float(transaction_data.get('sender_spam_score', 0.0))
         amt_ratio = float(transaction_data.get('transaction_amount_ratio', 1.0))
+        is_bbps = bool(transaction_data.get('is_bbps_verified', False))
+        is_typo = bool(transaction_data.get('is_typo_squatting', False))
+
+        # Legitimate BBPS merchant or non-typo payee should not trigger typo-squatting penalty
+        if is_bbps or not is_typo:
+            brand_sim = 0.0
 
         features = {
             'screen_sharing_active': screen_sharing,
@@ -63,15 +69,15 @@ class FraudInferenceEngine:
             dmat = xgb.DMatrix(df_input)
             raw_prob = float(self.unified_model.predict(dmat)[0])
         else:
-            raw_prob = 0.85 if screen_sharing == 1 or brand_sim >= 0.75 else 0.10
+            raw_prob = 0.85 if screen_sharing == 1 or (is_typo and brand_sim >= 0.75) else 0.10
 
         # Contextual fusion based on Section 6 Social Engineering & Pre-PIN Interception Architecture:
         prob = raw_prob
         # 1. Screen sharing + Active phone call = remote desktop coercion signature (AnyDesk / TeamViewer scam)
         if screen_sharing == 1 and call_active == 1:
             prob = max(prob, 0.992)
-        # 2. Typo-Squatting VPA (brand_sim >= 0.75) = High Risk phishing
-        elif brand_sim >= 0.75:
+        # 2. Typo-Squatting VPA (brand_sim >= 0.75 and is_typo and not is_bbps) = High Risk phishing
+        elif is_typo and brand_sim >= 0.75 and not is_bbps:
             prob = max(prob, 0.895)
         # 3. Collect Request Trap with active phone call
         elif is_collect == 1 and call_active == 1:
@@ -124,7 +130,8 @@ class FraudInferenceEngine:
                 "qr_origin": qr_origin,
                 "is_collect": bool(is_collect),
                 "brand_sim": brand_sim,
-                "is_typo_squatting": brand_sim >= 0.75
+                "is_typo_squatting": bool(is_typo and brand_sim >= 0.75 and not is_bbps),
+                "is_bbps_verified": bool(is_bbps)
             }
         }
 
