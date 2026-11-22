@@ -40,11 +40,15 @@
       "problemMatcher": []
     },
     {
-      "label": "Project Aegis: Run Bot CSV Tests",
+      "label": "Project Aegis: Run Unit Tests",
       "type": "shell",
-      "command": ".\\.venv\\Scripts\\python.exe",
+      "command": "python",
       "args": [
-        "test_bot_csv.py"
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
       ],
       "presentation": {
         "echo": true,

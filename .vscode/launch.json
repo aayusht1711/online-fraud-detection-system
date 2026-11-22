@@ -34,10 +34,15 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Project Aegis: Test Bot CSV Telemetry",
+      "name": "Project Aegis: Run Unit Tests",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/test_bot_csv.py",
+      "module": "unittest",
+      "args": [
+        "discover",
+        "-s",
+        "tests"
+      ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     }
